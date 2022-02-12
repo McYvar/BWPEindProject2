@@ -49,25 +49,25 @@ public class Movement : MonoBehaviour
 
         if (!moving)
         {
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetAxisRaw("Vertical") > 0)
             {
                 nextPos = Vector3.forward;
                 currentDirection = up;
                 canMove = true;
             }
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetAxisRaw("Horizontal") > 0)
             {
                 nextPos = Vector3.right;
                 currentDirection = right;
                 canMove = true;
             }
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetAxisRaw("Vertical") < 0)
             {
                 nextPos = Vector3.back;
                 currentDirection = down;
                 canMove = true;
             }
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetAxisRaw("Horizontal") < 0)
             {
                 nextPos = Vector3.left;
                 currentDirection = left;
@@ -98,32 +98,60 @@ public class Movement : MonoBehaviour
 
             if (!directionChange)
             {
-                if (canJump && Valid(2.1f))
+                // Jump two spaces forward
+                if (canJump && CheckForward())
                 {
                     destination = transform.position + (2 * nextPos);
                     canJump = false;
                     moving = true;
                     speed = 2 * normalSpeed;
+                    Debug.Log("Jump two spaces forward");
                 }
-                else if (ValidDown(1.1f))
+                // Jump two spaces forward over one space
+                else if (canJump && CheckForwardUp())
+                {
+                    destination = transform.position + (2 * nextPos) + Vector3.up;
+                    canJump = false;
+                    moving = true;
+                    speed = normalSpeed * 1.5f;
+                    Debug.Log("Jump two spaces forward over one space");
+                }
+                // Jump one space forward and two up
+                else if (canJump && CheckForwardDoubleUp())
+                {
+                    destination = transform.position + nextPos + (2 * Vector3.up);
+                    canJump = false;
+                    moving = true;
+                    speed = normalSpeed;
+                    Debug.Log("Jump one space forward and two up");
+                }
+                // Move one space forward and down one
+                else if (CheckForwardDown() && CheckForward())
                 {
                     destination = transform.position + nextPos + Vector3.down;
                     moving = true;
                     speed = normalSpeed;
+                    Debug.Log("Move one space forward and down one");
                 }
-                else if (Valid(1.1f))
+                // Move one space forward
+                else if (CheckForward())
                 {
                     destination = transform.position + nextPos;
                     moving = true;
                     speed = normalSpeed;
+                    Debug.Log("Move one space forward");
                 }
-                else if (ValidUp(2.1f))
+                // Move one space forward and one up
+                else if (CheckForwardUp())
                 {
                     destination = transform.position + nextPos + Vector3.up;
                     moving = true;
                     speed = normalSpeed;
+                    Debug.Log("Move one space forward and one up");
                 }
             }
+
+            if (Input.GetKey(KeyCode.LeftShift)) speed = 2 * normalSpeed;
             canMove = false;
             canJump = false;
             directionChange = false;
@@ -143,52 +171,52 @@ public class Movement : MonoBehaviour
                 destination = transform.position + Vector3.down;
                 speed = 30;
             }
+            Debug.Log(CheckForward());
+            Debug.Log(CheckForwardUp());
+            Debug.Log(CheckForwardDoubleUp());
+            Debug.Log(CheckForwardDown());
         }
     }
 
 
-    bool Valid(float rayLength)
+    bool ValidityCheck(Vector3 startingPosition, Vector3 direction, float length, LayerMask mask)
     {
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(startingPosition, direction);
         RaycastHit hit;
 
         Debug.DrawRay(ray.origin, ray.direction, Color.red);
 
-        if (Physics.Raycast(ray, out hit, rayLength, whatIsWall))
-        {
-            return false;
-        }
-        return true;
-    }
-
-
-    bool ValidUp(float rayLength)
-    {
-        Ray ray = new Ray(transform.position, transform.forward + Vector3.up);
-        RaycastHit hit;
-
-        Debug.DrawRay(ray.origin, ray.direction, Color.blue);
-
-        if (Physics.Raycast(ray, out hit, rayLength, whatIsWall))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    bool ValidDown(float rayLength)
-    {
-        Ray ray = new Ray(transform.position + transform.forward + Vector3.down, Vector3.down);
-        RaycastHit hit;
-
-        Debug.DrawRay(ray.origin, ray.direction, Color.black);
-
-        if (Physics.Raycast(ray, out hit, rayLength, whatIsFloor))
+        if (Physics.Raycast(ray, out hit, length, mask))
         {
             return true;
         }
         return false;
     }
+
+
+    bool CheckForward()
+    {
+        return ValidityCheck(transform.position, transform.forward, 1.1f, whatIsWall);
+    }
+
+
+    bool CheckForwardUp()
+    {
+        return ValidityCheck(transform.position + transform.up, transform.forward, 1.1f, whatIsWall);
+    }
+
+
+    bool CheckForwardDoubleUp()
+    {
+        return ValidityCheck(transform.position + (transform.up * 2), transform.forward, 1.1f, whatIsWall);
+    }
+
+
+    bool CheckForwardDown()
+    {
+        return ValidityCheck(transform.position + transform.forward, -transform.up, 1.1f, whatIsFloor);
+    }
+
 
     GameObject CheckFloor(float rayLength)
     {
@@ -202,4 +230,5 @@ public class Movement : MonoBehaviour
         }
         return null;
     }
+
 }
