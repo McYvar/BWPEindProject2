@@ -107,7 +107,7 @@ public class Movement : MonoBehaviour
             }
         }
 
-        if (canMove && !falling)
+        if (canMove && !falling && !dead)
         {
             transform.localEulerAngles = currentDirection;
 
@@ -146,7 +146,7 @@ public class Movement : MonoBehaviour
                     speed = normalSpeed;
                 }
                 // Move one space forward and down one
-                else if (!CheckForwardDown() && CheckForward(1.1f))
+                else if (!CheckForwardDownForGround() && CheckForward(1.1f) && CheckForwardDownForSpace())
                 {
                     destination = transform.position + nextPos + Vector3.down;
                     moving = true;
@@ -196,7 +196,6 @@ public class Movement : MonoBehaviour
                     dead = true;
                     camFollow = false;
                 }
-                else Debug.Log(fallDistance);
             }
         }
     }
@@ -237,10 +236,16 @@ public class Movement : MonoBehaviour
     }
 
 
-    bool CheckForwardDown()
+    bool CheckForwardDownForGround()
     {
         return ValidityCheck(transform.position + transform.forward - (1.5f * transform.up), -transform.up, 0.6f, whatIsFloor);
     }
+
+    bool CheckForwardDownForSpace()
+    {
+        return ValidityCheck(transform.position + transform.forward, -transform.up, 1.1f, whatIsFloor);
+    }
+
 
     bool CheckRoof()
     {
