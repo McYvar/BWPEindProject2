@@ -41,8 +41,8 @@ public class Movement : MonoBehaviour
     {
         if (camFollow) cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSpeed * Time.deltaTime);
 
-        //if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1, 0);
-        //if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1, 0);
+        if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1, 0);
+        if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1, 0);
     }
 
 
@@ -60,7 +60,7 @@ public class Movement : MonoBehaviour
         else falling = true;
 
         GameObject floor = CheckFloor(1.1f);
-        if (floor != null) floor.GetComponent<Glow>().timer = 1f;
+        //if (floor != null) floor.GetComponent<Glow>().timer = 1f;
 
         if (!moving && !dead)
         {
@@ -109,7 +109,7 @@ public class Movement : MonoBehaviour
 
         if (canMove && !falling && !dead)
         {
-            transform.localEulerAngles = currentDirection;
+            transform.localEulerAngles = currentDirection + CameraCheck();
 
             if (!directionChange)
             {
@@ -179,9 +179,10 @@ public class Movement : MonoBehaviour
             if (floor != null)
             {
                 fallDistance = 0;
-                Vector3 temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 2f, floor.transform.position.z - 0.5f);
+                //Vector3 temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 2f, floor.transform.position.z - 0.5f);
+                Vector3 temp = new Vector3(transform.position.x, floor.transform.position.y + 1.5f, transform.position.z);
                 destination = temp;
-                speed = Mathf.Infinity;
+                //speed = Mathf.Infinity;
                 falling = false;
             }
             else
@@ -198,6 +199,24 @@ public class Movement : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    Vector3 CameraCheck()
+    {
+        if (cam.transform.localEulerAngles.y > -135 && cam.transform.localEulerAngles.y <= -45)
+        {
+            return up;
+        }
+        if (cam.transform.localEulerAngles.y > -45 && cam.transform.localEulerAngles.y <= 45)
+        {
+            return up;
+        }
+        if (cam.transform.localEulerAngles.y > 45 && cam.transform.localEulerAngles.y <= 135)
+        {
+            return right;
+        }
+        return down;
     }
     #endregion
 
