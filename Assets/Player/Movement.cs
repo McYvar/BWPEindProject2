@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
     public GameObject cam;
     bool camFollow = true;
     Vector3 camVelocity = Vector3.zero;
-    public float camSpeed;
+    public float camSpeed, deadTimer;
 
     Vector3 up = Vector3.zero,
         right = new Vector3(0, 90, 0),
@@ -23,34 +23,53 @@ public class Movement : MonoBehaviour
     float speed, fallDistance;
     public float maxFallDistance;
 
-    bool canMove, moving, canJump, directionChange, falling, dead;
+    bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch, mouseCheat;
     public LayerMask whatIsWall, whatIsFloor;
+
+    Vector3 spawn;
     #endregion
 
 
     void Start()
     {
         currentDirection = up;
-        nextPos = Vector3.forward;
+        nextPos = transform.forward;
         destination = transform.position;
         speed = normalSpeed;
+        spawn = transform.position;
     }
 
 
     void LateUpdate()
     {
-        if (camFollow) cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSpeed * Time.deltaTime);
-
-        if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1, 0);
-        if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1, 0);
+        if (camFollow)
+        {
+            cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSpeed * Time.deltaTime);
+            if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1, 0);
+            if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1, 0);
+            if (mouseCheat)
+            {
+                cam.transform.Rotate(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0);
+                cam.transform.rotation = Quaternion.Euler(cam.transform.localEulerAngles.x, cam.transform.localEulerAngles.y, 0);
+            }
+        }
     }
 
 
     void Update()
     {
         Move();
+
+        MouseCheatCheck();
     }
 
+    void MouseCheatCheck()
+    {
+        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.Alpha3) && Input.GetKey(KeyCode.T))
+        {
+            mouseCheat = true;
+        }
+    }
 
     #region Movement
     void Move()
@@ -61,55 +80,58 @@ public class Movement : MonoBehaviour
 
         GameObject floor = CheckFloor(1.1f);
         //if (floor != null) floor.GetComponent<Glow>().timer = 1f;
-
         if (!moving && !dead)
         {
             if (Input.GetAxisRaw("Vertical") > 0)
             {
-                nextPos = Vector3.forward;
+                CameraCheck();
                 currentDirection = up;
                 canMove = true;
             }
             if (Input.GetAxisRaw("Horizontal") > 0)
             {
-                nextPos = Vector3.right;
+                CameraCheck();
                 currentDirection = right;
                 canMove = true;
             }
             if (Input.GetAxisRaw("Vertical") < 0)
             {
-                nextPos = Vector3.back;
+                CameraCheck();
                 currentDirection = down;
                 canMove = true;
             }
             if (Input.GetAxisRaw("Horizontal") < 0)
             {
-                nextPos = Vector3.left;
+                CameraCheck();
                 currentDirection = left;
                 canMove = true;
             }
             if (Input.GetKeyDown(KeyCode.LeftControl))
             {
+                CameraCheck();
                 canJump = true;
                 canMove = true;
             }
             if (Input.GetKeyDown(KeyCode.Q))
             {
+                CameraCheck();
                 canMove = true;
                 directionChange = true;
-                currentDirection += left;
+                currentDirection += new Vector3(0, -90, 0);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
+                CameraCheck();
                 canMove = true;
                 directionChange = true;
-                currentDirection += right;
+                currentDirection += new Vector3(0, 90, 0);
             }
         }
 
         if (canMove && !falling && !dead)
         {
-            transform.localEulerAngles = currentDirection + CameraCheck();
+            transform.localEulerAngles = currentDirection;
+            nextPos = transform.forward;
 
             if (!directionChange)
             {
@@ -129,7 +151,7 @@ public class Movement : MonoBehaviour
                     moving = true;
                     speed = normalSpeed * 2f;
                 }
-                // Jump two spaces forward and two up
+                // Jump two spaces forward and two up (only if there is something in between)
                 else if (canJump && CheckForwardUp(1.1f) && CheckForwardDoubleUp(2.1f))
                 {
                     destination = transform.position + (2 * nextPos) + (2 * Vector3.up);
@@ -172,7 +194,6 @@ public class Movement : MonoBehaviour
             canMove = false;
             canJump = false;
             directionChange = false;
-            nextPos = transform.forward;
         }
         else if (!moving)
         {
@@ -182,8 +203,9 @@ public class Movement : MonoBehaviour
                 //Vector3 temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 2f, floor.transform.position.z - 0.5f);
                 Vector3 temp = new Vector3(transform.position.x, floor.transform.position.y + 1.5f, transform.position.z);
                 destination = temp;
-                //speed = Mathf.Infinity;
+                speed = Mathf.Infinity;
                 falling = false;
+                firstFloorTouch = true;
             }
             else
             {
@@ -191,32 +213,64 @@ public class Movement : MonoBehaviour
                 speed = 30;
 
                 if (CheckFallDistance() > fallDistance) fallDistance = CheckFallDistance();
-                if (fallDistance > maxFallDistance)
+                if (fallDistance > maxFallDistance && firstFloorTouch)
                 {
-                    Invoke("DeadAndRespawn", 3);
-                    dead = true;
-                    camFollow = false;
+                    DeadAndRespawn();
                 }
             }
         }
     }
 
-
-    Vector3 CameraCheck()
+    void DeadAndRespawn()
     {
-        if (cam.transform.localEulerAngles.y > -135 && cam.transform.localEulerAngles.y <= -45)
+        if (!dead) deadTimer = 3;
+
+        if (deadTimer < 0)
         {
-            return up;
+            if (dead) transform.position = spawn;
+            dead = false;
+            camFollow = true;
+            firstFloorTouch = false;
+            // Remove life here
         }
-        if (cam.transform.localEulerAngles.y > -45 && cam.transform.localEulerAngles.y <= 45)
+        else
         {
-            return up;
+            dead = true;
+            camFollow = false;
+            deadTimer -= Time.deltaTime;
         }
-        if (cam.transform.localEulerAngles.y > 45 && cam.transform.localEulerAngles.y <= 135)
+    }
+
+    void CameraCheck()
+    {
+        if ((cam.transform.localEulerAngles.y > 0 && cam.transform.localEulerAngles.y <= 45) || (cam.transform.localEulerAngles.y > 315 && cam.transform.localEulerAngles.y <= 360))
         {
-            return right;
+            up = Vector3.zero;
+            right = new Vector3(0, 90, 0);
+            down = new Vector3(0, 180, 0);
+            left = new Vector3(0, 270, 0);
         }
-        return down;
+        else if (cam.transform.localEulerAngles.y > 45 && cam.transform.localEulerAngles.y <= 135)
+        {
+            left = Vector3.zero;
+            up = new Vector3(0, 90, 0);
+            right = new Vector3(0, 180, 0);
+            down = new Vector3(0, 270, 0);
+        }
+        else if (cam.transform.localEulerAngles.y > 135 && cam.transform.localEulerAngles.y <= 225)
+        {
+            down = Vector3.zero;
+            left = new Vector3(0, 90, 0);
+            up = new Vector3(0, 180, 0);
+            right = new Vector3(0, 270, 0);
+        }
+        else if (cam.transform.localEulerAngles.y > 225 && cam.transform.localEulerAngles.y <= 315)
+        {
+            right = Vector3.zero;
+            down = new Vector3(0, 90, 0);
+            left = new Vector3(0, 180, 0);
+            up = new Vector3(0, 270, 0);
+        }
     }
     #endregion
 
@@ -300,8 +354,12 @@ public class Movement : MonoBehaviour
     }
     #endregion
 
-    void DeadAndRespawn()
+    IEnumerator DeadAndRespawn(float time)
     {
-        SceneManager.LoadScene(0);
+        Debug.Log(dead);
+        yield return new WaitForSeconds(time);
+        dead = false;
+        camFollow = true;
+        Debug.Log(dead);
     }
 }
