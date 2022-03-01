@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
     public GameObject cam;
     bool camFollow = true;
     Vector3 camVelocity = Vector3.zero;
-    public float camSpeed, deadTimer;
+    public float camSmoothSpeed, camSpeed;
 
     Vector3 up = Vector3.zero,
         right = new Vector3(0, 90, 0),
@@ -20,7 +20,7 @@ public class Movement : MonoBehaviour
     Vector3 nextPos, destination;
 
     float normalSpeed = 5f;
-    float speed, fallDistance;
+    float speed, fallDistance, deadTimer;
     public float maxFallDistance;
 
     bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch, mouseCheat;
@@ -44,9 +44,9 @@ public class Movement : MonoBehaviour
     {
         if (camFollow)
         {
-            cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSpeed * Time.deltaTime);
-            if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1, 0);
-            if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1, 0);
+            cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSmoothSpeed * Time.deltaTime);
+            if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1 * camSpeed * Time.deltaTime, 0);
+            if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1 * camSpeed * Time.deltaTime, 0);
             if (mouseCheat)
             {
                 cam.transform.Rotate(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0);
