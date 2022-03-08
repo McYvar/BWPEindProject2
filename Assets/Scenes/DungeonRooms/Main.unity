@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 84239816}
+  - component: {fileID: 84239813}
   - component: {fileID: 84239817}
   m_Layer: 0
   m_Name: Player
@@ -140,6 +141,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &84239813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84239812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab39d88245f22b438b93e78351f5362, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 1012121270}
+  camFollow: 1
+  camSmoothSpeed: 100
+  camSpeed: 90
 --- !u!4 &84239816
 Transform:
   m_ObjectHideFlags: 0
@@ -168,9 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e674b2b68f5b24184eed7766dd2e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1012121270}
-  camSmoothSpeed: 30
-  camSpeed: 100
+  player: {fileID: 84239813}
   maxFallDistance: 7
   whatIsWall:
     serializedVersion: 2
@@ -379,7 +394,6 @@ GameObject:
   m_Component:
   - component: {fileID: 249469433}
   - component: {fileID: 249469432}
-  - component: {fileID: 249469434}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -463,19 +477,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &249469434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 249469431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2370ab81ce5871344b8a5b36a24ab66f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timer: 0
 --- !u!1 &283093283
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,7 +1042,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1242243469}
   - component: {fileID: 1242243468}
-  - component: {fileID: 1242243470}
   m_Layer: 7
   m_Name: PP
   m_TagString: Untagged
@@ -1080,19 +1080,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1242243470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242243467}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2370ab81ce5871344b8a5b36a24ab66f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timer: 0
 --- !u!1 &1275819222
 GameObject:
   m_ObjectHideFlags: 0

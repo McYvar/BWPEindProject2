@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Movement : MonoBehaviour
+public class PlayerTurnState : BaseState
 {
     #region varaiables and such
-    public GameObject cam;
-    bool camFollow = true;
-    Vector3 camVelocity = Vector3.zero;
-    public float camSmoothSpeed, camSpeed;
 
+    [SerializeField] Player player;
     Vector3 up = Vector3.zero,
         right = new Vector3(0, 90, 0),
         down = new Vector3(0, 180, 0),
@@ -23,14 +20,14 @@ public class Movement : MonoBehaviour
     float speed, fallDistance, deadTimer;
     public float maxFallDistance;
 
-    bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch, mouseCheat;
+    bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     public LayerMask whatIsWall, whatIsFloor;
 
     Vector3 spawn;
     #endregion
+    
 
-
-    void Start()
+    public override void OnAwake()
     {
         currentDirection = up;
         nextPos = transform.forward;
@@ -40,36 +37,29 @@ public class Movement : MonoBehaviour
     }
 
 
-    void LateUpdate()
+    public override void OnEnter()
     {
-        if (camFollow)
-        {
-            cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSmoothSpeed * Time.deltaTime);
-            if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1 * camSpeed * Time.deltaTime, 0);
-            if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1 * camSpeed * Time.deltaTime, 0);
-            if (mouseCheat)
-            {
-                cam.transform.Rotate(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0);
-                cam.transform.rotation = Quaternion.Euler(cam.transform.localEulerAngles.x, cam.transform.localEulerAngles.y, 0);
-            }
-        }
+
     }
 
 
-    void Update()
+    public override void OnExit()
+    {
+
+    }
+
+
+    public override void OnUpdate()
     {
         Move();
-
-        MouseCheatCheck();
     }
 
-    void MouseCheatCheck()
+
+    public override void OnFixedUpdate()
     {
-        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.Alpha3) && Input.GetKey(KeyCode.T))
-        {
-            mouseCheat = true;
-        }
+
     }
+
 
     #region Movement
     void Move()
@@ -229,42 +219,42 @@ public class Movement : MonoBehaviour
         {
             if (dead) transform.position = spawn;
             dead = false;
-            camFollow = true;
+            player.camFollow = true;
             firstFloorTouch = false;
             // Remove life here
         }
         else
         {
             dead = true;
-            camFollow = false;
+            player.camFollow = false;
             deadTimer -= Time.deltaTime;
         }
     }
 
     void CameraCheck()
     {
-        if ((cam.transform.localEulerAngles.y > 0 && cam.transform.localEulerAngles.y <= 45) || (cam.transform.localEulerAngles.y > 315 && cam.transform.localEulerAngles.y <= 360))
+        if ((player.cam.transform.localEulerAngles.y > 0 && player.cam.transform.localEulerAngles.y <= 45) || (player.cam.transform.localEulerAngles.y > 315 && player.cam.transform.localEulerAngles.y <= 360))
         {
             up = Vector3.zero;
             right = new Vector3(0, 90, 0);
             down = new Vector3(0, 180, 0);
             left = new Vector3(0, 270, 0);
         }
-        else if (cam.transform.localEulerAngles.y > 45 && cam.transform.localEulerAngles.y <= 135)
+        else if (player.cam.transform.localEulerAngles.y > 45 && player.cam.transform.localEulerAngles.y <= 135)
         {
             left = Vector3.zero;
             up = new Vector3(0, 90, 0);
             right = new Vector3(0, 180, 0);
             down = new Vector3(0, 270, 0);
         }
-        else if (cam.transform.localEulerAngles.y > 135 && cam.transform.localEulerAngles.y <= 225)
+        else if (player.cam.transform.localEulerAngles.y > 135 && player.cam.transform.localEulerAngles.y <= 225)
         {
             down = Vector3.zero;
             left = new Vector3(0, 90, 0);
             up = new Vector3(0, 180, 0);
             right = new Vector3(0, 270, 0);
         }
-        else if (cam.transform.localEulerAngles.y > 225 && cam.transform.localEulerAngles.y <= 315)
+        else if (player.cam.transform.localEulerAngles.y > 225 && player.cam.transform.localEulerAngles.y <= 315)
         {
             right = Vector3.zero;
             down = new Vector3(0, 90, 0);
@@ -359,7 +349,7 @@ public class Movement : MonoBehaviour
         Debug.Log(dead);
         yield return new WaitForSeconds(time);
         dead = false;
-        camFollow = true;
+        player.camFollow = true;
         Debug.Log(dead);
     }
 }
