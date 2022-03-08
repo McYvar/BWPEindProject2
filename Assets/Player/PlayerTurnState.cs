@@ -16,7 +16,7 @@ public class PlayerTurnState : BaseState
 
     Vector3 nextPos, destination;
 
-    float normalSpeed = 5f;
+    float normalSpeed = 5f, deadZone = 0.7f;
     float speed, fallDistance, deadTimer;
     public float maxFallDistance;
 
@@ -72,45 +72,48 @@ public class PlayerTurnState : BaseState
         //if (floor != null) floor.GetComponent<Glow>().timer = 1f;
         if (!moving && !dead)
         {
-            if (Input.GetAxisRaw("Vertical") > 0)
+            if (PlayerInput.leftJoy.y > deadZone)
             {
                 CameraCheck();
                 currentDirection = up;
                 canMove = true;
             }
-            if (Input.GetAxisRaw("Horizontal") > 0)
+            if (PlayerInput.leftJoy.x > deadZone)
             {
                 CameraCheck();
                 currentDirection = right;
                 canMove = true;
             }
-            if (Input.GetAxisRaw("Vertical") < 0)
+            if (PlayerInput.leftJoy.y < -deadZone)
             {
                 CameraCheck();
                 currentDirection = down;
                 canMove = true;
             }
-            if (Input.GetAxisRaw("Horizontal") < 0)
+            if (PlayerInput.leftJoy.x < -deadZone)
             {
                 CameraCheck();
                 currentDirection = left;
                 canMove = true;
             }
-            if (Input.GetKeyDown(KeyCode.LeftControl))
+            if (PlayerInput.southPressed)
             {
+                PlayerInput.southPressed = false;
                 CameraCheck();
                 canJump = true;
                 canMove = true;
             }
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (PlayerInput.leftShoulderPressed)
             {
+                PlayerInput.leftShoulderPressed = false;
                 CameraCheck();
                 canMove = true;
                 directionChange = true;
                 currentDirection += new Vector3(0, -90, 0);
             }
-            if (Input.GetKeyDown(KeyCode.E))
+            if (PlayerInput.rightShoulderPressed)
             {
+                PlayerInput.rightShoulderPressed = false;
                 CameraCheck();
                 canMove = true;
                 directionChange = true;
@@ -180,7 +183,7 @@ public class PlayerTurnState : BaseState
                 }
             }
 
-            if (Input.GetKey(KeyCode.LeftShift)) speed = 2 * normalSpeed;
+            if (PlayerInput.westPressed) speed = 2 * normalSpeed;
             canMove = false;
             canJump = false;
             directionChange = false;
@@ -352,4 +355,5 @@ public class PlayerTurnState : BaseState
         player.camFollow = true;
         Debug.Log(dead);
     }
+
 }

@@ -21,13 +21,18 @@ public class Player : MonoBehaviour
         if (camFollow)
         {
             cam.transform.position = Vector3.SmoothDamp(cam.transform.position, transform.position, ref camVelocity, camSmoothSpeed * Time.deltaTime);
-            if (Input.GetKey(KeyCode.Z)) cam.transform.Rotate(0, 1 * camSpeed * Time.deltaTime, 0);
-            if (Input.GetKey(KeyCode.X)) cam.transform.Rotate(0, -1 * camSpeed * Time.deltaTime, 0);
+            cam.transform.Rotate(0, PlayerInput.rightJoy.x * camSpeed * Time.deltaTime, 0);
+            if (PlayerInput.dPad.x != 0)
+            {
+                cam.transform.Rotate(0, PlayerInput.dPad.x * 90, 0);
+                PlayerInput.dPad = new Vector2(0, 0);
+            }
+            /*
             if (mouseCheat)
             {
                 cam.transform.Rotate(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0);
                 cam.transform.rotation = Quaternion.Euler(cam.transform.localEulerAngles.x, cam.transform.localEulerAngles.y, 0);
-            }
+            }*/
         }
     }
 
@@ -46,7 +51,7 @@ public class Player : MonoBehaviour
 
     void MouseCheatCheck()
     {
-        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.Alpha3) && Input.GetKey(KeyCode.T))
+        if (PlayerInput.northPressed && PlayerInput.eastPressed && PlayerInput.southPressed && PlayerInput.westPressed)
         {
             mouseCheat = true;
         }
