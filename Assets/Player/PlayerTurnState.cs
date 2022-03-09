@@ -14,11 +14,12 @@ public class PlayerTurnState : BaseState
 
     Vector3 nextPos, destination;
 
-    float normalSpeed = 5f, deadZone = 0.7f;
+    public float normalSpeed;
+    float deadZone = 0.7f;
     float speed, fallDistance, deadTimer;
     public float maxFallDistance;
 
-    public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
+    bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     public LayerMask whatIsWall, whatIsFloor;
 
     Vector3 spawn;
@@ -49,7 +50,6 @@ public class PlayerTurnState : BaseState
     public override void OnUpdate()
     {
         Move();
-        Debug.Log(CheckFallDistance());
     }
 
 
@@ -208,7 +208,6 @@ public class PlayerTurnState : BaseState
                 if (currentFallDistance > fallDistance) fallDistance = currentFallDistance;
                 if (fallDistance > maxFallDistance && firstFloorTouch)
                 {
-                    Debug.Log(fallDistance);
                     DeadAndRespawn();
                 }
             }
@@ -221,7 +220,7 @@ public class PlayerTurnState : BaseState
         if (!dead) deadTimer = 3;
         if (deadTimer < 0)
         {
-            if (dead) destination = spawn;
+            if (dead) transform.position = spawn;
             dead = false;
             player.camFollow = true;
             firstFloorTouch = false;
@@ -323,11 +322,10 @@ public class PlayerTurnState : BaseState
     float CheckFallDistance()
     {
         RaycastHit hit;
-        Ray ray = new Ray(transform.position, -transform.up);
+        Ray ray = new Ray(transform.position - transform.up * 0.4f, -transform.up);
         if (Physics.Raycast(ray, out hit, 1000, whatIsFloor, QueryTriggerInteraction.UseGlobal))
         {
-            Vector3 temp = new Vector3(transform.position.x, hit.transform.position.y, transform.position.y);
-            return Vector3.Distance(ray.origin, temp);
+            return Vector3.Distance(hit.point, transform.position);
         }
         return 1000;
     }
@@ -347,14 +345,5 @@ public class PlayerTurnState : BaseState
         return null;
     }
     #endregion
-
-    IEnumerator DeadAndRespawn(float time)
-    {
-        Debug.Log(dead);
-        yield return new WaitForSeconds(time);
-        dead = false;
-        player.camFollow = true;
-        Debug.Log(dead);
-    }
 
 }
