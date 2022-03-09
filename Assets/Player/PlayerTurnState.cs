@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerTurnState : BaseState
 {
@@ -20,12 +18,11 @@ public class PlayerTurnState : BaseState
     float speed, fallDistance, deadTimer;
     public float maxFallDistance;
 
-    bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
+    public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     public LayerMask whatIsWall, whatIsFloor;
 
     Vector3 spawn;
     #endregion
-    
 
     public override void OnAwake()
     {
@@ -52,6 +49,7 @@ public class PlayerTurnState : BaseState
     public override void OnUpdate()
     {
         Move();
+        Debug.Log(CheckFallDistance());
     }
 
 
@@ -192,9 +190,10 @@ public class PlayerTurnState : BaseState
         {
             if (floor != null)
             {
+                Vector3 temp;
+                if (floor.CompareTag("Floater")) temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 2f, floor.transform.position.z - 0.5f);
+                else temp = new Vector3(transform.position.x, floor.transform.position.y + 1.5f, transform.position.z);
                 fallDistance = 0;
-                //Vector3 temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 2f, floor.transform.position.z - 0.5f);
-                Vector3 temp = new Vector3(transform.position.x, floor.transform.position.y + 1.5f, transform.position.z);
                 destination = temp;
                 speed = Mathf.Infinity;
                 falling = false;
@@ -205,26 +204,28 @@ public class PlayerTurnState : BaseState
                 destination = transform.position + Vector3.down;
                 speed = 30;
 
-                if (CheckFallDistance() > fallDistance) fallDistance = CheckFallDistance();
+                float currentFallDistance = CheckFallDistance();
+                if (currentFallDistance > fallDistance) fallDistance = currentFallDistance;
                 if (fallDistance > maxFallDistance && firstFloorTouch)
                 {
+                    Debug.Log(fallDistance);
                     DeadAndRespawn();
                 }
             }
         }
+        if (dead) DeadAndRespawn();
     }
 
     void DeadAndRespawn()
     {
         if (!dead) deadTimer = 3;
-
         if (deadTimer < 0)
         {
-            if (dead) transform.position = spawn;
+            if (dead) destination = spawn;
             dead = false;
             player.camFollow = true;
             firstFloorTouch = false;
-            // Remove life here
+            // Remove lifes here
         }
         else
         {
@@ -269,14 +270,14 @@ public class PlayerTurnState : BaseState
 
 
     #region Raycast checks
-    bool ValidityCheck(Vector3 startingPosition, Vector3 direction, float length, LayerMask mask)
+    bool ValidityCheck(Vector3 startingPosition, Vector3 direction, float rayLength, LayerMask mask)
     {
         Ray ray = new Ray(startingPosition, direction);
         RaycastHit hit;
 
-        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+        Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.red);
 
-        if (Physics.Raycast(ray, out hit, length, mask))
+        if (Physics.Raycast(ray, out hit, rayLength, mask))
         {
             return false;
         }
@@ -286,47 +287,47 @@ public class PlayerTurnState : BaseState
 
     bool CheckForward(float length)
     {
-        return ValidityCheck(transform.position, transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position + transform.up * 0.5f, transform.forward, length, whatIsWall);
     }
 
 
     bool CheckForwardUp(float length)
     {
-        return ValidityCheck(transform.position + transform.up, transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position + transform.up * 1.5f, transform.forward, length, whatIsWall);
     }
 
 
     bool CheckForwardDoubleUp(float length)
     {
-        return ValidityCheck(transform.position + (transform.up * 2), transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position + transform.up * 2.5f, transform.forward, length, whatIsWall);
     }
 
 
     bool CheckForwardDownForGround()
     {
-        return ValidityCheck(transform.position + transform.forward - (1.5f * transform.up), -transform.up, 0.6f, whatIsFloor);
+        return ValidityCheck(transform.position + transform.forward - 1.0f * transform.up, -transform.up, 0.6f, whatIsFloor);
     }
 
     bool CheckForwardDownForSpace()
     {
-        return ValidityCheck(transform.position + transform.forward, -transform.up, 1.1f, whatIsFloor);
+        return ValidityCheck(transform.position + transform.forward + transform.up * 0.5f, -transform.up, 1.1f, whatIsFloor);
     }
 
 
     bool CheckRoof()
     {
-        return ValidityCheck(transform.position, transform.up, 2.1f, whatIsWall);
+        return ValidityCheck(transform.position + transform.up * 0.5f, transform.up, 2.1f, whatIsWall);
     }
 
 
     float CheckFallDistance()
     {
-        Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, 1000, whatIsFloor))
+        Ray ray = new Ray(transform.position, -transform.up);
+        if (Physics.Raycast(ray, out hit, 1000, whatIsFloor, QueryTriggerInteraction.UseGlobal))
         {
-            return Vector3.Distance(ray.origin, hit.transform.position);
+            Vector3 temp = new Vector3(transform.position.x, hit.transform.position.y, transform.position.y);
+            return Vector3.Distance(ray.origin, temp);
         }
         return 1000;
     }
@@ -334,10 +335,10 @@ public class PlayerTurnState : BaseState
 
     GameObject CheckFloor(float rayLength)
     {
-        Ray ray = new Ray(transform.position, -transform.up);
+        Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
         RaycastHit hit;
 
-        Debug.DrawRay(ray.origin, ray.direction, Color.yellow);
+        Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.yellow);
 
         if (Physics.Raycast(ray, out hit, rayLength, whatIsFloor))
         {

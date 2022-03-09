@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Floor
   - Wall
+  - Floater
   layers:
   - Default
   - TransparentFX
