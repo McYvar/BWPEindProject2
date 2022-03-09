@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DungeonGenerationData
   m_EditorClassIdentifier: 
   numberOfCrawlers: 1
-  iterationMin: 15
-  iterationMax: 20
+  iterationMin: 10
+  iterationMax: 100

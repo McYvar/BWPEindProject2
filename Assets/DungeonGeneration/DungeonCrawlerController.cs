@@ -37,7 +37,8 @@ public class DungeonCrawlerController : MonoBehaviour
             foreach (DungeonCrawler dungeonCrawler in dungeonCrawlers)
             {
                 Vector2Int newPos = dungeonCrawler.Move(directionMovementMap);
-                positionVisited.Add(newPos);
+                if (positionVisited.Contains(newPos)) iterations++; // Added a line to make sure every room has an actual new position
+                else positionVisited.Add(newPos);
             }
         }
 

@@ -27,6 +27,7 @@ public class RoomController : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        Time.timeScale = 0f;
     }
 
     private void Update()
@@ -43,6 +44,7 @@ public class RoomController : MonoBehaviour
 
         if(loadRoomQueue.Count == 0)
         {
+            Time.timeScale = 1f;
             return;
         }
 
