@@ -32,6 +32,8 @@ public class PlayerTurnState : BaseState
         destination = transform.position;
         speed = normalSpeed;
         spawn = transform.position;
+        GameObject floor = CheckFloor(1.1f);
+        transform.position = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1.5f, floor.transform.position.z - 0.5f);
     }
 
 
@@ -121,6 +123,7 @@ public class PlayerTurnState : BaseState
 
         if (canMove && !falling && !dead)
         {
+            transform.position = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1.5f, floor.transform.position.z - 0.5f);
             transform.localEulerAngles = currentDirection;
             nextPos = transform.forward;
 
@@ -191,7 +194,7 @@ public class PlayerTurnState : BaseState
             if (floor != null)
             {
                 Vector3 temp;
-                if (floor.CompareTag("Floater")) temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 2f, floor.transform.position.z - 0.5f);
+                if (floor.CompareTag("Floater")) temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1.5f, floor.transform.position.z - 0.5f);
                 else temp = new Vector3(transform.position.x, floor.transform.position.y + 1.5f, transform.position.z);
                 fallDistance = 0;
                 destination = temp;
