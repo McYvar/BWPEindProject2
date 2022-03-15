@@ -32,8 +32,6 @@ public class PlayerTurnState : BaseState
         destination = transform.position;
         speed = normalSpeed;
         spawn = transform.position;
-        GameObject floor = CheckFloor(1.1f);
-        transform.position = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1.5f, floor.transform.position.z - 0.5f);
     }
 
 
@@ -123,7 +121,6 @@ public class PlayerTurnState : BaseState
 
         if (canMove && !falling && !dead)
         {
-            transform.position = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1.5f, floor.transform.position.z - 0.5f);
             transform.localEulerAngles = currentDirection;
             nextPos = transform.forward;
 
@@ -185,6 +182,7 @@ public class PlayerTurnState : BaseState
             }
 
             if (PlayerInput.westPressed) speed = 2 * normalSpeed;
+            else speed = normalSpeed;
             canMove = false;
             canJump = false;
             directionChange = false;
@@ -194,10 +192,13 @@ public class PlayerTurnState : BaseState
             if (floor != null)
             {
                 Vector3 temp;
-                if (floor.CompareTag("Floater")) temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1.5f, floor.transform.position.z - 0.5f);
-                else temp = new Vector3(transform.position.x, floor.transform.position.y + 1.5f, transform.position.z);
+                if (floor.CompareTag("Floater"))
+                {
+                    temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1f, floor.transform.position.z - 0.5f);
+                    destination = temp;
+                }
+                //else temp = new Vector3(transform.position.x, floor.transform.position.y + 1f, transform.position.z);
                 fallDistance = 0;
-                destination = temp;
                 speed = Mathf.Infinity;
                 falling = false;
                 firstFloorTouch = true;
@@ -289,36 +290,36 @@ public class PlayerTurnState : BaseState
 
     bool CheckForward(float length)
     {
-        return ValidityCheck(transform.position + transform.up * 0.5f, transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position, transform.forward, length, whatIsWall);
     }
 
 
     bool CheckForwardUp(float length)
     {
-        return ValidityCheck(transform.position + transform.up * 1.5f, transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position + transform.up * 1f, transform.forward, length, whatIsWall);
     }
 
 
     bool CheckForwardDoubleUp(float length)
     {
-        return ValidityCheck(transform.position + transform.up * 2.5f, transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position + transform.up * 2f, transform.forward, length, whatIsWall);
     }
 
 
     bool CheckForwardDownForGround()
     {
-        return ValidityCheck(transform.position + transform.forward - 1.0f * transform.up, -transform.up, 0.6f, whatIsFloor);
+        return ValidityCheck(transform.position + transform.forward - 1.0f * (transform.up * 0.5f), -transform.up, 0.6f, whatIsFloor);
     }
 
     bool CheckForwardDownForSpace()
     {
-        return ValidityCheck(transform.position + transform.forward + transform.up * 0.5f, -transform.up, 1.1f, whatIsFloor);
+        return ValidityCheck(transform.position + transform.forward, -transform.up, 1.1f, whatIsFloor);
     }
 
 
     bool CheckRoof()
     {
-        return ValidityCheck(transform.position + transform.up * 0.5f, transform.up, 2.1f, whatIsWall);
+        return ValidityCheck(transform.position, transform.up, 2.1f, whatIsWall);
     }
 
 
@@ -336,7 +337,7 @@ public class PlayerTurnState : BaseState
 
     GameObject CheckFloor(float rayLength)
     {
-        Ray ray = new Ray(transform.position + transform.up * 0.5f, -transform.up);
+        Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
 
         Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.yellow);

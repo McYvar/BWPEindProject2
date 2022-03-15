@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -152,15 +152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 369ddea905505bc4ea36c4b2a6f695e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 200
-  gridHeight: 200
-  roomSizeMin: 5
-  roomSizeMax: 10
-  numRooms: 25
-  minDistanceBetweenRooms: 0
+  gridWidth: 1000
+  gridHeight: 1000
+  roomSizeMin: 30
+  roomSizeMax: 50
+  numRooms: 100
+  minDistanceBetweenRooms: 3
+  maxDistanceToCreateHall: 300
   minHallWidth: 3
   maxHallWidth: 5
-  FloorPrefab: {fileID: 506443604}
+  floorPrefab: {fileID: 506443604}
+  playerPrefab: {fileID: 7578467976778116087, guid: a51b596dd7f7ed94e807e3da2ec48941, type: 3}
 --- !u!4 &136753973
 Transform:
   m_ObjectHideFlags: 0
@@ -181,7 +183,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-278854
+  m_Name: pb_Mesh17456
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -507,7 +509,7 @@ GameObject:
   - component: {fileID: 362580798}
   - component: {fileID: 362580797}
   m_Layer: 3
-  m_Name: Wall
+  m_Name: PBWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -842,9 +844,9 @@ GameObject:
   - component: {fileID: 506443607}
   - component: {fileID: 506443606}
   - component: {fileID: 506443605}
-  m_Layer: 0
-  m_Name: Cube
-  m_TagString: Untagged
+  m_Layer: 6
+  m_Name: NormalFloor
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -881,7 +883,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e0c933e7c4ba99b4dbc1c84678184fc9, type: 2}
+  - {fileID: 2100000, guid: 173a8f721acb2da4ab97854dcfaf9a51, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1546,7 +1548,7 @@ GameObject:
   - component: {fileID: 1299855303}
   - component: {fileID: 1299855302}
   m_Layer: 6
-  m_Name: Floor
+  m_Name: PBFloor
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

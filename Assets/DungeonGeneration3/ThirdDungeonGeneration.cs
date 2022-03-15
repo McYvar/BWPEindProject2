@@ -13,46 +13,29 @@ public class ThirdDungeonGeneration : MonoBehaviour
     [SerializeField] int numRooms = 10;
 
     [SerializeField] int minDistanceBetweenRooms = 1;
+    [SerializeField] int maxDistanceToCreateHall = 10;
 
     [SerializeField] int minHallWidth;
     [SerializeField] int maxHallWidth;
 
     [SerializeField] Dictionary<Vector3Int, RoomInformation> dungeon = new Dictionary<Vector3Int, RoomInformation>();
 
-    [SerializeField] GameObject FloorPrefab;
+    [SerializeField] GameObject floorPrefab;
+    [SerializeField] GameObject playerPrefab;
+
+    int preventInfiniteLoop;
 
     private void Start()
     {
         Generate();
+
+        SummonPlayer();
     }
 
-    public void Generate()
+    public void SummonPlayer()
     {
-        for (int i = 0; i < numRooms; i++)
-        {
-            int xMin = Random.Range(0, gridWidth);
-            int xMax = xMin + Random.Range(roomSizeMin, roomSizeMax + 1);
-            int zMin = Random.Range(0, gridHeight);
-            int zMax = zMin + Random.Range(roomSizeMin, roomSizeMax + 1);
-
-            int xScale = xMax - xMin;
-            int zScale = zMax - zMin;
-
-            RoomInformation room = new RoomInformation(xMin, xMax, zMin, zMax, xScale, zScale);
-            if (DoesRoomExists(room)) { i--; continue; }
-
-            AddRoom(room);
-            FloorPrefab.transform.localScale = new Vector3Int(room.xScale, 1, room.zScale);
-            Instantiate(FloorPrefab, room.GetCenter(), Quaternion.identity, transform);
-
-            RoomInformation existingRoom;
-            foreach (RoomInformation value in RandomValues(dungeon).Take(1))
-            {
-                if (room == value) break;
-                existingRoom = value;
-                ConnectRooms(room, existingRoom);
-            }
-        }
+        RoomInformation anyRoom = RandomValues(dungeon).First();
+        Instantiate(playerPrefab, anyRoom.GetCenter() + Vector3.up * 5, Quaternion.identity);
     }
 
     public IEnumerable<RoomInformation> RandomValues<Vector3Int, RoomInformation>(IDictionary<Vector3Int, RoomInformation> dict)
@@ -63,6 +46,33 @@ public class ThirdDungeonGeneration : MonoBehaviour
         while (true)
         {
             yield return values[rand.Next(size)];
+        }
+    }
+
+    public void Generate()
+    {
+        for (int i = 0; i < numRooms && preventInfiniteLoop < 50; i++)
+        {
+            int xMin = Random.Range(0, gridWidth);
+            int xMax = xMin + Random.Range(roomSizeMin, roomSizeMax + 1);
+            int zMin = Random.Range(0, gridHeight);
+            int zMax = zMin + Random.Range(roomSizeMin, roomSizeMax + 1);
+
+            int xScale = xMax - xMin;
+            int zScale = zMax - zMin;
+
+            RoomInformation room = new RoomInformation(xMin, xMax, zMin, zMax, xScale, zScale);
+            if (DoesRoomExists(room)) { i--; preventInfiniteLoop++; continue; }
+
+            AddRoom(room);
+            floorPrefab.transform.localScale = new Vector3Int(room.xScale, 1, room.zScale);
+            Instantiate(floorPrefab, room.GetCenter(), Quaternion.identity, transform);
+
+            foreach (var existingRooms in dungeon)
+            {
+                if (Vector3.Distance(existingRooms.Key, room.GetCenter()) < maxDistanceToCreateHall)
+                    ConnectRooms(existingRooms.Value, room);
+            }
         }
     }
 
@@ -100,25 +110,27 @@ public class ThirdDungeonGeneration : MonoBehaviour
         Vector3Int roomOneCenter = roomOne.GetCenter();
         Vector3Int roomTwoCenter = roomTwo.GetCenter();
 
+        int width = Random.Range(minHallWidth, maxHallWidth);
         float xMin = roomOneCenter.x < roomTwoCenter.x ? roomOneCenter.x + roomOne.xScale * 0.5f : roomOneCenter.x - roomOne.xScale * 0.5f;
-        float xMax = roomTwoCenter.x;
+        float xMax = roomOneCenter.x < roomTwoCenter.x ? roomTwoCenter.x + width * 0.5f : roomTwoCenter.x - width * 0.5f;
         float xCenter = (xMin + xMax) * 0.5f;
-
+        Debug.Log("(" + xMin + " + " + xMax + ") / 2 = " + xCenter);
         float xScale = Mathf.Abs(xMax - xMin);
 
         float zMin = roomTwoCenter.z < roomOneCenter.z ? roomTwoCenter.z + roomTwo.zScale * 0.5f : roomTwoCenter.z - roomTwo.zScale * 0.5f;
-        float zMax = roomOneCenter.z;
+        float zMax = roomTwoCenter.z < roomOneCenter.z ? roomOneCenter.z + width * 0.5f : roomOneCenter.z - width * 0.5f;
 
-        float zScale = Mathf.Abs(zMax - zMin);
         float zCenter = (zMin + zMax) * 0.5f;
+        Debug.Log("(" + zMin + " + " + zMax + ") / 2 = " + zCenter);
+        float zScale = Mathf.Abs(zMax - zMin);
 
-        FloorPrefab.transform.localScale = new Vector3(xScale, 1, Random.Range(minHallWidth, maxHallWidth));
-        Instantiate(FloorPrefab, new Vector3(xCenter, 0, zMin), Quaternion.identity, transform);
+        floorPrefab.transform.localScale = new Vector3(xScale, 1, width);
+        Instantiate(floorPrefab, new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform);
 
-        FloorPrefab.transform.localScale = new Vector3(Random.Range(minHallWidth, maxHallWidth), 1, zScale);
-        Instantiate(FloorPrefab, new Vector3(xMin, 0, zCenter), Quaternion.identity, transform);
+        floorPrefab.transform.localScale = new Vector3(width, 1, zScale);
+        Instantiate(floorPrefab, new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform);
 
-        Debug.Log(xMin + ", " + zMin + "; " + xMax + ", " + zMax + ", " + xCenter + ", " + zCenter);
+        //Debug.Log(xMin + ", " + zMin + "; " + xMax + ", " + zMax + ", " + xCenter + ", " + zCenter);
     }
 
 

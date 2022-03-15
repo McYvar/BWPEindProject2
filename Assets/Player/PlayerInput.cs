@@ -45,6 +45,7 @@ public class PlayerInput : MonoBehaviour
     public void West(InputAction.CallbackContext c)
     {
         if (c.performed) westPressed = true;
+        if (c.canceled) westPressed = false;
     }
 
     public static bool leftShoulderPressed;
