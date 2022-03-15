@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -17,10 +18,12 @@ public class ThirdDungeonGeneration : MonoBehaviour
 
     [SerializeField] int minHallWidth;
     [SerializeField] int maxHallWidth;
+    [SerializeField] int maxAmountOfConnectedHalls;
 
     [SerializeField] Dictionary<Vector3Int, RoomInformation> dungeon = new Dictionary<Vector3Int, RoomInformation>();
-
-    [SerializeField] GameObject floorPrefab;
+    
+    [SerializeField] GameObject roomFloorPrefab;
+    [SerializeField] GameObject hallFloorPrefab;
     [SerializeField] GameObject playerPrefab;
 
     int preventInfiniteLoop;
@@ -30,12 +33,13 @@ public class ThirdDungeonGeneration : MonoBehaviour
         Generate();
 
         SummonPlayer();
+
     }
 
     public void SummonPlayer()
     {
         RoomInformation anyRoom = RandomValues(dungeon).First();
-        Instantiate(playerPrefab, anyRoom.GetCenter() + Vector3.up * 5, Quaternion.identity);
+        Instantiate(playerPrefab, anyRoom.GetCenter() + new Vector3(0.5f, 5, -0.5f), Quaternion.identity);
     }
 
     public IEnumerable<RoomInformation> RandomValues<Vector3Int, RoomInformation>(IDictionary<Vector3Int, RoomInformation> dict)
@@ -53,10 +57,10 @@ public class ThirdDungeonGeneration : MonoBehaviour
     {
         for (int i = 0; i < numRooms && preventInfiniteLoop < 50; i++)
         {
-            int xMin = Random.Range(0, gridWidth);
-            int xMax = xMin + Random.Range(roomSizeMin, roomSizeMax + 1);
-            int zMin = Random.Range(0, gridHeight);
-            int zMax = zMin + Random.Range(roomSizeMin, roomSizeMax + 1);
+            int xMin = makeEven(Random.Range(0, gridWidth));
+            int xMax = xMin + makeEven(Random.Range(roomSizeMin, roomSizeMax + 1));
+            int zMin = makeEven(Random.Range(0, gridHeight));
+            int zMax = zMin + makeEven(Random.Range(roomSizeMin, roomSizeMax + 1));
 
             int xScale = xMax - xMin;
             int zScale = zMax - zMin;
@@ -65,15 +69,26 @@ public class ThirdDungeonGeneration : MonoBehaviour
             if (DoesRoomExists(room)) { i--; preventInfiniteLoop++; continue; }
 
             AddRoom(room);
-            floorPrefab.transform.localScale = new Vector3Int(room.xScale, 1, room.zScale);
-            Instantiate(floorPrefab, room.GetCenter(), Quaternion.identity, transform);
+            roomFloorPrefab.transform.localScale = new Vector3Int(room.xScale, 1, room.zScale);
+            Instantiate(roomFloorPrefab, room.GetCenter(), Quaternion.identity, transform);
 
             foreach (var existingRooms in dungeon)
             {
-                if (Vector3.Distance(existingRooms.Key, room.GetCenter()) < maxDistanceToCreateHall)
+                if (existingRooms.Value == room) continue;
+                if (Vector3.Distance(existingRooms.Key, room.GetCenter()) < maxDistanceToCreateHall && room.getHallsAmount() < maxAmountOfConnectedHalls)
+                {
                     ConnectRooms(existingRooms.Value, room);
+                    room.setHallsAmount(room.getHallsAmount() + 1);
+                }
             }
         }
+    }
+
+
+    public int makeEven(float input)
+    {
+        if (input % 2 == 0) return (int) input;
+        else return (int) input + 1;
     }
 
 
@@ -110,27 +125,37 @@ public class ThirdDungeonGeneration : MonoBehaviour
         Vector3Int roomOneCenter = roomOne.GetCenter();
         Vector3Int roomTwoCenter = roomTwo.GetCenter();
 
-        int width = Random.Range(minHallWidth, maxHallWidth);
+        int width = makeEven(Random.Range(minHallWidth, maxHallWidth));
         float xMin = roomOneCenter.x < roomTwoCenter.x ? roomOneCenter.x + roomOne.xScale * 0.5f : roomOneCenter.x - roomOne.xScale * 0.5f;
         float xMax = roomOneCenter.x < roomTwoCenter.x ? roomTwoCenter.x + width * 0.5f : roomTwoCenter.x - width * 0.5f;
         float xCenter = (xMin + xMax) * 0.5f;
-        Debug.Log("(" + xMin + " + " + xMax + ") / 2 = " + xCenter);
         float xScale = Mathf.Abs(xMax - xMin);
 
         float zMin = roomTwoCenter.z < roomOneCenter.z ? roomTwoCenter.z + roomTwo.zScale * 0.5f : roomTwoCenter.z - roomTwo.zScale * 0.5f;
         float zMax = roomTwoCenter.z < roomOneCenter.z ? roomOneCenter.z + width * 0.5f : roomOneCenter.z - width * 0.5f;
 
         float zCenter = (zMin + zMax) * 0.5f;
-        Debug.Log("(" + zMin + " + " + zMax + ") / 2 = " + zCenter);
         float zScale = Mathf.Abs(zMax - zMin);
 
-        floorPrefab.transform.localScale = new Vector3(xScale, 1, width);
-        Instantiate(floorPrefab, new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform);
+        hallFloorPrefab.transform.localScale = new Vector3(xScale - 0.01f, 0.99f, width - 0.01f);
+        Instantiate(createNewObjWithTextureTiling(hallFloorPrefab), new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform);
 
-        floorPrefab.transform.localScale = new Vector3(width, 1, zScale);
-        Instantiate(floorPrefab, new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform);
+        hallFloorPrefab.transform.localScale = new Vector3(width - 0.01f, 0.99f, zScale - 0.01f);
+        Instantiate(createNewObjWithTextureTiling(hallFloorPrefab), new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform);
 
         //Debug.Log(xMin + ", " + zMin + "; " + xMax + ", " + zMax + ", " + xCenter + ", " + zCenter);
+    }
+
+
+    public GameObject createNewObjWithTextureTiling(GameObject obj)
+    {
+        GameObject temp;
+        temp = obj;
+        Texture tex = obj.GetComponent<Renderer>().material.mainTexture;
+        temp.GetComponent<MeshRenderer>().material = null;
+        temp.GetComponent<MeshRenderer>().material.mainTextureScale = new Vector2(temp.transform.localScale.x, temp.transform.localScale.z);
+        temp.GetComponent<MeshRenderer>().material.mainTexture = tex;
+        return temp;
     }
 
 
@@ -145,6 +170,7 @@ public class ThirdDungeonGeneration : MonoBehaviour
 public class RoomInformation
 {
     public int xMin, xMax, zMin, zMax, xScale, zScale;
+    int hallsAmount;
 
     public RoomInformation(int xMin, int xMax, int zMin, int zMax, int xScale, int zScale)
     {
@@ -154,6 +180,18 @@ public class RoomInformation
         this.zMax = zMax;
         this.xScale = xScale;
         this.zScale = zScale;
+        hallsAmount = 0;
+    }
+
+
+    public int getHallsAmount()
+    {
+        return hallsAmount;
+    }
+
+    public void setHallsAmount(int amount)
+    {
+        hallsAmount = amount;
     }
 
 
