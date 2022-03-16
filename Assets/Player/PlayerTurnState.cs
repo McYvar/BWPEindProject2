@@ -308,7 +308,7 @@ public class PlayerTurnState : BaseState
 
     bool CheckForwardDownForGround()
     {
-        return ValidityCheck(transform.position + transform.forward - 1.0f * (transform.up * 0.5f), -transform.up, 0.6f, whatIsFloor);
+        return ValidityCheck(transform.position + transform.forward - transform.up, -transform.up, 0.6f, whatIsFloor);
     }
 
     bool CheckForwardDownForSpace()

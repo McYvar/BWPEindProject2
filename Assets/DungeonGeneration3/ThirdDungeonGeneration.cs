@@ -23,8 +23,10 @@ public class ThirdDungeonGeneration : MonoBehaviour
     [SerializeField] Dictionary<Vector3Int, RoomInformation> dungeon = new Dictionary<Vector3Int, RoomInformation>();
     
     [SerializeField] GameObject roomFloorPrefab;
-    [SerializeField] GameObject hallFloorPrefab;
+    [SerializeField] GameObject hallFloorPrefabVert;
+    [SerializeField] GameObject hallFloorPrefabHori;
     [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject floater;
 
     int preventInfiniteLoop;
 
@@ -96,8 +98,8 @@ public class ThirdDungeonGeneration : MonoBehaviour
     {
         foreach (var existingRoom in dungeon)
         {
-            if (DistanceBetweenTwoRooms(existingRoom.Value, room).x < ScaleBetweenRooms(existingRoom.Value, room).x + minDistanceBetweenRooms &&
-                DistanceBetweenTwoRooms(existingRoom.Value, room).z < ScaleBetweenRooms(existingRoom.Value, room).z + minDistanceBetweenRooms)
+            if (DistanceBetweenTwoRooms(existingRoom.Value, room).x < ScaleBetweenTwoRooms(existingRoom.Value, room).x + minDistanceBetweenRooms &&
+                DistanceBetweenTwoRooms(existingRoom.Value, room).z < ScaleBetweenTwoRooms(existingRoom.Value, room).z + minDistanceBetweenRooms)
                 return true;
         }
         return false;
@@ -112,7 +114,7 @@ public class ThirdDungeonGeneration : MonoBehaviour
     }
 
 
-    public Vector3Int ScaleBetweenRooms(RoomInformation roomOne, RoomInformation roomTwo)
+    public Vector3Int ScaleBetweenTwoRooms(RoomInformation roomOne, RoomInformation roomTwo)
     {
         int scaleX = roomOne.xScale + roomTwo.xScale;
         int scaleZ = roomOne.zScale + roomTwo.zScale;
@@ -137,13 +139,32 @@ public class ThirdDungeonGeneration : MonoBehaviour
         float zCenter = (zMin + zMax) * 0.5f;
         float zScale = Mathf.Abs(zMax - zMin);
 
-        hallFloorPrefab.transform.localScale = new Vector3(xScale - 0.01f, 0.99f, width - 0.01f);
-        Instantiate(createNewObjWithTextureTiling(hallFloorPrefab), new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform);
+        if (xScale > 2)
+        {
+            hallFloorPrefabHori.transform.localScale = new Vector3(xScale - 0.01f, 0.99f, width - 0.01f);
+            Instantiate(createNewObjWithTextureTiling(hallFloorPrefabHori), new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform);
+        }
 
-        hallFloorPrefab.transform.localScale = new Vector3(width - 0.01f, 0.99f, zScale - 0.01f);
-        Instantiate(createNewObjWithTextureTiling(hallFloorPrefab), new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform);
+        if (zScale > 2)
+        {
+            hallFloorPrefabVert.transform.localScale = new Vector3(width - 0.01f, 0.99f, zScale - 0.01f);
+            Instantiate(createNewObjWithTextureTiling(hallFloorPrefabVert), new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform);
+        }
 
-        //Debug.Log(xMin + ", " + zMin + "; " + xMax + ", " + zMax + ", " + xCenter + ", " + zCenter);
+        GameObject pointA = new GameObject("PointA");
+        GameObject pointB = new GameObject("PointB");
+        GameObject pointC = new GameObject("PointC");
+        pointA.transform.position = new Vector3(xMin, 0, zMax);
+        pointB.transform.position = new Vector3(xMin, 0, zMin);
+        pointC.transform.position = new Vector3(xMax, 0, zMin);
+        List<Transform> tempList = new List<Transform>();
+        tempList.Add(pointA.transform);
+        tempList.Add(pointB.transform);
+        tempList.Add(pointC.transform);
+
+        GameObject obj = Instantiate(floater, transform);
+        FloatingDevice script = obj.GetComponent<FloatingDevice>();
+        script.SetValues(tempList, 1, 1);
     }
 
 
