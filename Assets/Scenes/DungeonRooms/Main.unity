@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &136753972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,7 +156,7 @@ MonoBehaviour:
   gridHeight: 100
   roomSizeMin: 4
   roomSizeMax: 12
-  numRooms: 2
+  numRooms: 1000
   minDistanceBetweenRooms: -5
   maxDistanceToCreateHall: 50
   minHallWidth: 2
@@ -590,7 +590,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1277466445
 Transform:
   m_ObjectHideFlags: 0
@@ -856,8 +856,8 @@ MonoBehaviour:
   roomSizeMax: 20
   minDistanceBetweenRooms: 1
   numRooms: 10
-  floorPrefab: {fileID: 0}
-  wallPrefab: {fileID: 0}
+  floorPrefab: {fileID: 506443604}
+  wallPrefab: {fileID: 506443604}
   playerPrefab: {fileID: 7578467976778116087, guid: a51b596dd7f7ed94e807e3da2ec48941, type: 3}
 --- !u!4 &1976803750
 Transform:

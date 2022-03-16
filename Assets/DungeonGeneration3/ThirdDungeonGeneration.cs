@@ -35,7 +35,6 @@ public class ThirdDungeonGeneration : MonoBehaviour
         Generate();
 
         SummonPlayer();
-
     }
 
     public void SummonPlayer()
@@ -57,7 +56,7 @@ public class ThirdDungeonGeneration : MonoBehaviour
 
     public void Generate()
     {
-        for (int i = 0; i < numRooms && preventInfiniteLoop < 50; i++)
+        for (int i = 0; i < numRooms && preventInfiniteLoop < 100; i++)
         {
             int xMin = makeEven(Random.Range(0, gridWidth));
             int xMax = xMin + makeEven(Random.Range(roomSizeMin, roomSizeMax + 1));
@@ -71,21 +70,23 @@ public class ThirdDungeonGeneration : MonoBehaviour
             if (DoesRoomExists(room)) { i--; preventInfiniteLoop++; continue; }
 
             AddRoom(room);
-            roomFloorPrefab.transform.localScale = new Vector3Int(room.xScale, 1, room.zScale);
-            Instantiate(roomFloorPrefab, room.GetCenter(), Quaternion.identity, transform);
 
-            foreach (var existingRooms in dungeon)
-            {
-                if (existingRooms.Value == room) continue;
-                if (Vector3.Distance(existingRooms.Key, room.GetCenter()) < maxDistanceToCreateHall && room.getHallsAmount() < maxAmountOfConnectedHalls)
-                {
-                    ConnectRooms(existingRooms.Value, room);
-                    room.setHallsAmount(room.getHallsAmount() + 1);
-                }
-            }
+            CreateHalls(room);
         }
     }
 
+    private void CreateHalls(RoomInformation room)
+    {
+        foreach (var existingRooms in dungeon)
+        {
+            if (existingRooms.Value == room) continue;
+            if (Vector3.Distance(existingRooms.Key, room.GetCenter()) < maxDistanceToCreateHall && room.getHallsAmount() < maxAmountOfConnectedHalls)
+            {
+                ConnectRooms(existingRooms.Value, room);
+                room.setHallsAmount(room.getHallsAmount() + 1);
+            }
+        }
+    }
 
     public int makeEven(float input)
     {
@@ -122,18 +123,18 @@ public class ThirdDungeonGeneration : MonoBehaviour
     }
 
 
-    public void ConnectRooms(RoomInformation roomOne, RoomInformation roomTwo)
+    public void ConnectRooms(RoomInformation existingRoom, RoomInformation currentRoom)
     {
-        Vector3Int roomOneCenter = roomOne.GetCenter();
-        Vector3Int roomTwoCenter = roomTwo.GetCenter();
+        Vector3Int roomOneCenter = existingRoom.GetCenter();
+        Vector3Int roomTwoCenter = currentRoom.GetCenter();
 
         int width = makeEven(Random.Range(minHallWidth, maxHallWidth));
-        float xMin = roomOneCenter.x < roomTwoCenter.x ? roomOneCenter.x + roomOne.xScale * 0.5f : roomOneCenter.x - roomOne.xScale * 0.5f;
+        float xMin = roomOneCenter.x < roomTwoCenter.x ? roomOneCenter.x + existingRoom.xScale * 0.5f : roomOneCenter.x - existingRoom.xScale * 0.5f;
         float xMax = roomOneCenter.x < roomTwoCenter.x ? roomTwoCenter.x + width * 0.5f : roomTwoCenter.x - width * 0.5f;
         float xCenter = (xMin + xMax) * 0.5f;
         float xScale = Mathf.Abs(xMax - xMin);
 
-        float zMin = roomTwoCenter.z < roomOneCenter.z ? roomTwoCenter.z + roomTwo.zScale * 0.5f : roomTwoCenter.z - roomTwo.zScale * 0.5f;
+        float zMin = roomTwoCenter.z < roomOneCenter.z ? roomTwoCenter.z + currentRoom.zScale * 0.5f : roomTwoCenter.z - currentRoom.zScale * 0.5f;
         float zMax = roomTwoCenter.z < roomOneCenter.z ? roomOneCenter.z + width * 0.5f : roomOneCenter.z - width * 0.5f;
 
         float zCenter = (zMin + zMax) * 0.5f;
@@ -142,29 +143,19 @@ public class ThirdDungeonGeneration : MonoBehaviour
         if (xScale > 2)
         {
             hallFloorPrefabHori.transform.localScale = new Vector3(xScale - 0.01f, 0.99f, width - 0.01f);
-            Instantiate(createNewObjWithTextureTiling(hallFloorPrefabHori), new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform);
+            currentRoom.halls.Add(Instantiate(createNewObjWithTextureTiling(hallFloorPrefabHori), new Vector3(xCenter, 0, roomOneCenter.z), Quaternion.identity, transform));
         }
 
         if (zScale > 2)
         {
             hallFloorPrefabVert.transform.localScale = new Vector3(width - 0.01f, 0.99f, zScale - 0.01f);
-            Instantiate(createNewObjWithTextureTiling(hallFloorPrefabVert), new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform);
+            currentRoom.halls.Add(Instantiate(createNewObjWithTextureTiling(hallFloorPrefabVert), new Vector3(roomTwoCenter.x, 0, zCenter), Quaternion.identity, transform));
         }
 
-        GameObject pointA = new GameObject("PointA");
-        GameObject pointB = new GameObject("PointB");
-        GameObject pointC = new GameObject("PointC");
-        pointA.transform.position = new Vector3(xMin, 0, zMax);
-        pointB.transform.position = new Vector3(xMin, 0, zMin);
-        pointC.transform.position = new Vector3(xMax, 0, zMin);
-        List<Transform> tempList = new List<Transform>();
-        tempList.Add(pointA.transform);
-        tempList.Add(pointB.transform);
-        tempList.Add(pointC.transform);
-
-        GameObject obj = Instantiate(floater, transform);
-        FloatingDevice script = obj.GetComponent<FloatingDevice>();
-        script.SetValues(tempList, 1, 1);
+        foreach (GameObject obj in currentRoom.halls)
+        {
+            obj.transform.parent = currentRoom.roomObj.transform;
+        }
     }
 
 
@@ -182,7 +173,16 @@ public class ThirdDungeonGeneration : MonoBehaviour
 
     public void AddRoom(RoomInformation room)
     {
+        roomFloorPrefab.transform.localScale = new Vector3Int(room.xScale, 1, room.zScale);
+        room.roomObj = Instantiate(roomFloorPrefab, room.GetCenter(), Quaternion.identity, transform);
+        room.roomObj.name = "Room" + dungeon.Count;
         dungeon.Add(room.GetCenter(), room);
+    }
+
+
+    public void CreateWalls()
+    {
+
     }
 }
 
@@ -192,6 +192,8 @@ public class RoomInformation
 {
     public int xMin, xMax, zMin, zMax, xScale, zScale;
     int hallsAmount;
+    public GameObject roomObj;
+    public List<GameObject> halls;
 
     public RoomInformation(int xMin, int xMax, int zMin, int zMax, int xScale, int zScale)
     {
@@ -202,6 +204,8 @@ public class RoomInformation
         this.xScale = xScale;
         this.zScale = zScale;
         hallsAmount = 0;
+        roomObj = new GameObject();
+        halls = new List<GameObject>();
     }
 
 
@@ -209,6 +213,7 @@ public class RoomInformation
     {
         return hallsAmount;
     }
+
 
     public void setHallsAmount(int amount)
     {
