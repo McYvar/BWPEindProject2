@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class PlayerTurnState : BaseState
 {
+    public GameObject cam;
+    public int playerHasTurns;
+    int turns;
+
     #region varaiables and such
 
     [SerializeField] Player player;
@@ -32,12 +36,14 @@ public class PlayerTurnState : BaseState
         destination = transform.position;
         speed = normalSpeed;
         spawn = transform.position;
+
+        cam = FindObjectOfType<CameraBehaviour>().gameObject;
     }
 
 
     public override void OnEnter()
     {
-
+        turns = playerHasTurns;
     }
 
 
@@ -49,13 +55,12 @@ public class PlayerTurnState : BaseState
 
     public override void OnUpdate()
     {
+        if (turns < 0) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
+        Debug.Log(turns);
+
         Move();
-    }
 
-
-    public override void OnFixedUpdate()
-    {
-
+        cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
     }
 
 
@@ -126,59 +131,64 @@ public class PlayerTurnState : BaseState
 
             if (!directionChange)
             {
-                // Jump two spaces forward
-                if (canJump && CheckForward(2.1f))
+                Debug.Log(CheckForwardDownWall());
+                if (!CheckForwardDownWall())
                 {
-                    destination = transform.position + (2 * nextPos);
-                    canJump = false;
-                    moving = true;
-                    speed = 2f * normalSpeed;
+                    // Jump two spaces forward
+                    if (canJump && CheckForward(2.1f))
+                    {
+                        destination = transform.position + (2 * nextPos);
+                        canJump = false;
+                        moving = true;
+                        speed = 2f * normalSpeed;
+                    }
+                    // Jump two spaces forward over one space
+                    else if (canJump && CheckForwardUp(2.1f))
+                    {
+                        destination = transform.position + (2 * nextPos) + Vector3.up;
+                        canJump = false;
+                        moving = true;
+                        speed = normalSpeed * 2f;
+                    }
+                    // Jump two spaces forward and two up (only if there is something in between)
+                    else if (canJump && CheckForwardUp(1.1f) && CheckForwardDoubleUp(2.1f))
+                    {
+                        destination = transform.position + (2 * nextPos) + (2 * Vector3.up);
+                        canJump = false;
+                        moving = true;
+                        speed = normalSpeed * 2f;
+                    }
+                    // Jump one space forward and two up
+                    else if (canJump && CheckForwardDoubleUp(1.1f) && CheckRoof())
+                    {
+                        destination = transform.position + nextPos + (2 * Vector3.up);
+                        canJump = false;
+                        moving = true;
+                        speed = normalSpeed;
+                    }
+                    // Move one space forward and down one
+                    else if (!CheckForwardDownForGround() && CheckForward(1.1f) && CheckForwardDownForSpace())
+                    {
+                        destination = transform.position + nextPos + Vector3.down;
+                        moving = true;
+                        speed = normalSpeed;
+                    }
+                    // Move one space forward
+                    else if (CheckForward(1.1f))
+                    {
+                        destination = transform.position + nextPos;
+                        moving = true;
+                        speed = normalSpeed;
+                    }
+                    // Move one space forward and one up
+                    else if (CheckForwardUp(1.1f))
+                    {
+                        destination = transform.position + nextPos + Vector3.up;
+                        moving = true;
+                        speed = normalSpeed;
+                    }
                 }
-                // Jump two spaces forward over one space
-                else if (canJump && CheckForwardUp(2.1f))
-                {
-                    destination = transform.position + (2 * nextPos) + Vector3.up;
-                    canJump = false;
-                    moving = true;
-                    speed = normalSpeed * 2f;
-                }
-                // Jump two spaces forward and two up (only if there is something in between)
-                else if (canJump && CheckForwardUp(1.1f) && CheckForwardDoubleUp(2.1f))
-                {
-                    destination = transform.position + (2 * nextPos) + (2 * Vector3.up);
-                    canJump = false;
-                    moving = true;
-                    speed = normalSpeed * 2f;
-                }
-                // Jump one space forward and two up
-                else if (canJump && CheckForwardDoubleUp(1.1f) && CheckRoof())
-                {
-                    destination = transform.position + nextPos + (2 * Vector3.up);
-                    canJump = false;
-                    moving = true;
-                    speed = normalSpeed;
-                }
-                // Move one space forward and down one
-                else if (!CheckForwardDownForGround() && CheckForward(1.1f) && CheckForwardDownForSpace())
-                {
-                    destination = transform.position + nextPos + Vector3.down;
-                    moving = true;
-                    speed = normalSpeed;
-                }
-                // Move one space forward
-                else if (CheckForward(1.1f))
-                {
-                    destination = transform.position + nextPos;
-                    moving = true;
-                    speed = normalSpeed;
-                }
-                // Move one space forward and one up
-                else if (CheckForwardUp(1.1f))
-                {
-                    destination = transform.position + nextPos + Vector3.up;
-                    moving = true;
-                    speed = normalSpeed;
-                }
+                turns--;
             }
 
             if (PlayerInput.westPressed) speed = 2 * normalSpeed;
@@ -226,42 +236,40 @@ public class PlayerTurnState : BaseState
         {
             if (dead) transform.position = spawn;
             dead = false;
-            player.camFollow = true;
             firstFloorTouch = false;
             // Remove lifes here
         }
         else
         {
             dead = true;
-            player.camFollow = false;
             deadTimer -= Time.deltaTime;
         }
     }
 
     void CameraCheck()
     {
-        if ((player.cam.transform.localEulerAngles.y > 0 && player.cam.transform.localEulerAngles.y <= 45) || (player.cam.transform.localEulerAngles.y > 315 && player.cam.transform.localEulerAngles.y <= 360))
+        if ((cam.transform.localEulerAngles.y > 0 && cam.transform.localEulerAngles.y <= 45) || (cam.transform.localEulerAngles.y > 315 && cam.transform.localEulerAngles.y <= 360))
         {
             up = Vector3.zero;
             right = new Vector3(0, 90, 0);
             down = new Vector3(0, 180, 0);
             left = new Vector3(0, 270, 0);
         }
-        else if (player.cam.transform.localEulerAngles.y > 45 && player.cam.transform.localEulerAngles.y <= 135)
+        else if (cam.transform.localEulerAngles.y > 45 && cam.transform.localEulerAngles.y <= 135)
         {
             left = Vector3.zero;
             up = new Vector3(0, 90, 0);
             right = new Vector3(0, 180, 0);
             down = new Vector3(0, 270, 0);
         }
-        else if (player.cam.transform.localEulerAngles.y > 135 && player.cam.transform.localEulerAngles.y <= 225)
+        else if (cam.transform.localEulerAngles.y > 135 && cam.transform.localEulerAngles.y <= 225)
         {
             down = Vector3.zero;
             left = new Vector3(0, 90, 0);
             up = new Vector3(0, 180, 0);
             right = new Vector3(0, 270, 0);
         }
-        else if (player.cam.transform.localEulerAngles.y > 225 && player.cam.transform.localEulerAngles.y <= 315)
+        else if (cam.transform.localEulerAngles.y > 225 && cam.transform.localEulerAngles.y <= 315)
         {
             right = Vector3.zero;
             down = new Vector3(0, 90, 0);
@@ -285,6 +293,11 @@ public class PlayerTurnState : BaseState
             return false;
         }
         return true;
+    }
+
+    bool CheckForwardDownWall()
+    {
+        return ValidityCheck(transform.position + transform.forward + transform.up * 10, -transform.up, 30, whatIsFloor);
     }
 
 

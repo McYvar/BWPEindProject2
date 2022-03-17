@@ -7,11 +7,15 @@ public class DungeonGenerator : MonoBehaviour
 {
     public DungeonGenerationData dungeonGenerationData;
     private List<Vector2Int> dungeonRooms;
+    public GameObject player;
+
 
     private void Start()
     {
         dungeonRooms = DungeonCrawlerController.GenerateDungeon(dungeonGenerationData);
         SpawnRooms(dungeonRooms);
+
+        Instantiate(player, Vector3.one * 0.5f + Vector3.up * 5, Quaternion.identity);
     }
 
     private void SpawnRooms(List<Vector2Int> rooms)

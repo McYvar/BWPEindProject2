@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace NewDungeonGeneration {
+namespace TileBasedDungeonGeneration {
 
     public enum TileType { Floor, Wall }
 
@@ -12,7 +12,7 @@ namespace NewDungeonGeneration {
     public class NewDungeonGeneration : MonoBehaviour
     {
         [SerializeField] Dictionary<Vector3Int, TileType> dungeon = new Dictionary<Vector3Int, TileType>();
-        [SerializeField] List<Room> roomsList = new List<Room>();
+        List<Room> roomsList = new List<Room>();
 
         [SerializeField] int gridWidth = 100;
         [SerializeField] int gridHeight = 100;
@@ -27,11 +27,21 @@ namespace NewDungeonGeneration {
         [SerializeField] GameObject floorPrefab;
         [SerializeField] GameObject wallPrefab;
 
+        [SerializeField] GameObject floorMapout;
+        [SerializeField] GameObject wallMapout;
+        [SerializeField] List<GameObject> objectsToCombine;
+
         [SerializeField] GameObject playerPrefab;
+
+        int preventInfiniteLoop = 5000;
 
         private void Start()
         {
             Generate();
+
+
+
+            foreach (GameObject obj in objectsToCombine) CombineMeshes(obj);
 
             SpawnPlayer();
         }
@@ -39,13 +49,13 @@ namespace NewDungeonGeneration {
         
         public void SpawnPlayer()
         {
-            Instantiate(playerPrefab, roomsList[0].GetCenter() + Vector3.up, Quaternion.identity);
+            Instantiate(playerPrefab, roomsList[0].GetCenter() + Vector3.up * 5, Quaternion.identity);
         }
 
 
         public void Generate()
         {
-            for (int i = 0; i < numRooms; i++)
+            for (int i = 0; i < numRooms && preventInfiniteLoop > 0; i++)
             {
                 int xMin = Random.Range(0, gridWidth);
                 int xMax = xMin + Random.Range(roomSizeMin, roomSizeMax + 1);
@@ -54,7 +64,7 @@ namespace NewDungeonGeneration {
 
                 Room room = new Room(xMin, xMax, zMin, zMax);
                 if (!DoesRoomExists(room)) AddRoomToDungeon(room);
-                else i--;
+                else { i--; preventInfiniteLoop--; }
             }
 
             for (int i = 0; i < roomsList.Count; i++)
@@ -103,8 +113,8 @@ namespace NewDungeonGeneration {
             {
                 switch (kv.Value)
                 {
-                    case TileType.Floor: Instantiate(floorPrefab, kv.Key, Quaternion.identity, transform); break;
-                    case TileType.Wall: Instantiate(wallPrefab, kv.Key, Quaternion.identity, transform); break;
+                    case TileType.Floor: Instantiate(floorPrefab, kv.Key, Quaternion.identity, floorMapout.transform); break;
+                    case TileType.Wall: Instantiate(wallPrefab, kv.Key, Quaternion.identity, wallMapout.transform); break;
                 }
             }
         }
@@ -151,6 +161,34 @@ namespace NewDungeonGeneration {
             }
         }
 
+
+        public void CombineMeshes(GameObject obj)
+        {
+            //Temporarily set position to zero to make matrix math easier
+            Vector3 position = obj.transform.position;
+            obj.transform.position = Vector3.zero;
+
+            //Get all mesh filters and combine
+            MeshFilter[] meshFilters = obj.GetComponentsInChildren<MeshFilter>();
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+            int i = 1;
+            while (i < meshFilters.Length)
+            {
+                combine[i].mesh = meshFilters[i].sharedMesh;
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                meshFilters[i].gameObject.SetActive(false);
+                i++;
+            }
+
+            obj.transform.GetComponent<MeshFilter>().mesh = new Mesh();
+            obj.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true, true);
+            obj.transform.gameObject.SetActive(true);
+
+            //Return to original position
+            obj.transform.position = position;
+
+            obj.AddComponent<MeshCollider>();
+        }
     }
 
 

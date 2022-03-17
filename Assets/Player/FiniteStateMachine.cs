@@ -10,7 +10,6 @@ public class FiniteStateMachine
     private BaseState currentState;
     public BaseState lastState;
 
-
     public FiniteStateMachine(System.Type startState, params BaseState[] states)
     {
         foreach(BaseState state in states)
@@ -22,15 +21,9 @@ public class FiniteStateMachine
         SwitchState(startState);
     }
 
-
     public void OnUpdate()
     {
         currentState?.OnUpdate();
-    }
-
-    public void OnFixedUpdate()
-    {
-        currentState?.OnFixedUpdate();
     }
 
 
