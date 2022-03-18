@@ -7,9 +7,7 @@ namespace TileBasedDungeonGeneration {
 
     public enum TileType { Floor, Wall }
 
-
-
-    public class NewDungeonGeneration : MonoBehaviour
+    public class TileBasedDungeonGeneration : MonoBehaviour
     {
         [SerializeField] Dictionary<Vector3Int, TileType> dungeon = new Dictionary<Vector3Int, TileType>();
         List<Room> roomsList = new List<Room>();
@@ -33,23 +31,21 @@ namespace TileBasedDungeonGeneration {
 
         [SerializeField] GameObject playerPrefab;
 
+        [SerializeField] GameObject[] enemies;
+        [SerializeField] int maxEnemiesPerRoom;
+        Queue<Enemy> enemyQueue = new Queue<Enemy>();
+
         int preventInfiniteLoop = 5000;
 
         private void Start()
         {
             Generate();
 
-
-
             foreach (GameObject obj in objectsToCombine) CombineMeshes(obj);
 
-            SpawnPlayer();
-        }
+            SpawnEnemies();
 
-        
-        public void SpawnPlayer()
-        {
-            Instantiate(playerPrefab, roomsList[0].GetCenter() + Vector3.up * 5, Quaternion.identity);
+            SpawnPlayer();
         }
 
 
@@ -79,7 +75,26 @@ namespace TileBasedDungeonGeneration {
 
             SpawnDungeon();
         }
+        
 
+        void SpawnEnemies()
+        {
+            foreach (Room room in roomsList)
+            {
+                int amount = Random.Range(0, maxEnemiesPerRoom);
+                for (int i = 0; i < amount; i++)
+                {
+                    enemyQueue.Enqueue(Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 0.5f, Quaternion.identity).GetComponent<Enemy>());
+                }
+            }
+            Room randomRoom = roomsList[(Random.Range(0, roomsList.Count)) % roomsList.Count];
+        }
+
+
+        void SpawnPlayer()
+        {
+            Instantiate(playerPrefab, roomsList[0].GetCenter() + Vector3.up * 5, Quaternion.identity);
+        }
 
         public bool DoesRoomExists(Room room)
         {
@@ -209,6 +224,12 @@ namespace TileBasedDungeonGeneration {
         public Vector3Int GetCenter()
         {
             return new Vector3Int(Mathf.RoundToInt(Mathf.Lerp(xMin, xMax, 0.5f)), 0, Mathf.RoundToInt(Mathf.Lerp(zMin, zMax, 0.5f)));
+        }
+
+
+        public Vector3Int GetRandomLocation()
+        {
+            return new Vector3Int(Random.Range(xMin, xMax), 0, Random.Range(zMin, zMax));
         }
     }
 }
