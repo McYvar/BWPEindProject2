@@ -14,6 +14,7 @@ namespace TileBasedDungeonGeneration {
 
         [SerializeField] int gridWidth = 100;
         [SerializeField] int gridHeight = 100;
+        public Vector2 GetGrid() { return new Vector2(gridWidth, gridHeight); }
 
         [SerializeField] int roomSizeMin = 3;
         [SerializeField] int roomSizeMax = 7;
@@ -33,7 +34,7 @@ namespace TileBasedDungeonGeneration {
 
         [SerializeField] GameObject[] enemies;
         [SerializeField] int maxEnemiesPerRoom;
-        Queue<Enemy> enemyQueue = new Queue<Enemy>();
+        public static Queue<Enemy> enemyQueue = new Queue<Enemy>();
 
         int preventInfiniteLoop = 5000;
 
@@ -79,15 +80,17 @@ namespace TileBasedDungeonGeneration {
 
         void SpawnEnemies()
         {
-            foreach (Room room in roomsList)
+            for (int j = 0; j < roomsList.Count; j++)
             {
-                int amount = Random.Range(0, maxEnemiesPerRoom);
+                Room room = roomsList[j];
+                int amount = Random.Range(0, maxEnemiesPerRoom + 1);
                 for (int i = 0; i < amount; i++)
                 {
-                    enemyQueue.Enqueue(Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 0.5f, Quaternion.identity).GetComponent<Enemy>());
+                    GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 0.5f, Quaternion.identity);
+                    enemy.name = "Enemy" + j;
+                    enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
                 }
             }
-            Room randomRoom = roomsList[(Random.Range(0, roomsList.Count)) % roomsList.Count];
         }
 
 

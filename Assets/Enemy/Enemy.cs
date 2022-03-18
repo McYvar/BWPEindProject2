@@ -7,10 +7,11 @@ public class Enemy : MonoBehaviour, IDamagable
     [SerializeField] EnemyInfo info;
 
     private int turns;
+    public bool isTurn;
 
     public int healt { get; set; }
 
-    FiniteStateMachine fsm;
+    public FiniteStateMachine fsm;
 
     private void Start()
     {

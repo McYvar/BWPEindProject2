@@ -10,6 +10,12 @@ public class CameraBehaviour : MonoBehaviour
     Vector3 camVelocity = Vector3.zero;
     public float camSmoothSpeed, camSpeed;
 
+    private void Start()
+    {
+        Vector2 grid = FindObjectOfType<TileBasedDungeonGeneration.TileBasedDungeonGeneration>().GetGrid();
+        transform.position = new Vector3(grid.x / 2, 30, grid.y / 2);
+    }
+
     void LateUpdate()
     {
         if (camFollow)

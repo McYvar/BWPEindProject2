@@ -1876,7 +1876,7 @@ GameObject:
   - component: {fileID: 1891582848}
   - component: {fileID: 1891582847}
   m_Layer: 0
-  m_Name: CamerController
+  m_Name: CameraController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1897,8 +1897,8 @@ MonoBehaviour:
   objectToFollow: {fileID: 0}
   cam: {fileID: 348301557}
   camFollow: 1
-  camSmoothSpeed: 200
-  camSpeed: 6
+  camSmoothSpeed: 30
+  camSpeed: 10
 --- !u!4 &1891582848
 Transform:
   m_ObjectHideFlags: 0
@@ -1926,6 +1926,7 @@ GameObject:
   - component: {fileID: 1976803749}
   - component: {fileID: 1976803751}
   - component: {fileID: 1976803752}
+  - component: {fileID: 1976803753}
   m_Layer: 6
   m_Name: RoomController2
   m_TagString: Untagged
@@ -2027,6 +2028,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1976803753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976803748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 531625f92e76fc744a4d94d0bf33a7ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2025304815
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,6 +2074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd00f82302c458948bac51169d22670d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
 --- !u!114 &2025304817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2086,6 +2100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: {fileID: 11400000, guid: c7105448268c4824ba45ba2f7cd88202, type: 2}
+  isTurn: 0
 --- !u!65 &2025304819
 BoxCollider:
   m_ObjectHideFlags: 0

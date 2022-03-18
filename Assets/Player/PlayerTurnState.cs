@@ -55,10 +55,10 @@ public class PlayerTurnState : BaseState
 
     public override void OnUpdate()
     {
-        if (turns < 0) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
+        Move();
+        if (turns <= 0 && !moving) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
         Debug.Log(turns);
 
-        Move();
 
         cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
     }
@@ -132,6 +132,8 @@ public class PlayerTurnState : BaseState
             if (!directionChange)
             {
                 Debug.Log(CheckForwardDownWall());
+                turns--;
+
                 if (!CheckForwardDownWall())
                 {
                     // Jump two spaces forward
@@ -188,7 +190,6 @@ public class PlayerTurnState : BaseState
                         speed = normalSpeed;
                     }
                 }
-                turns--;
             }
 
             if (PlayerInput.westPressed) speed = 2 * normalSpeed;
@@ -237,7 +238,6 @@ public class PlayerTurnState : BaseState
             if (dead) transform.position = spawn;
             dead = false;
             firstFloorTouch = false;
-            // Remove lifes here
         }
         else
         {
