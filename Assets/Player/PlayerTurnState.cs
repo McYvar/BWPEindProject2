@@ -57,7 +57,6 @@ public class PlayerTurnState : BaseState
     {
         Move();
         if (turns <= 0 && !moving) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
-        Debug.Log(turns);
 
 
         cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
@@ -131,7 +130,6 @@ public class PlayerTurnState : BaseState
 
             if (!directionChange)
             {
-                Debug.Log(CheckForwardDownWall());
                 turns--;
 
                 if (!CheckForwardDownWall())

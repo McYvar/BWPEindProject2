@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43667546, g: 0.48427135, b: 0.5645225, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -684,7 +684,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17458
+  m_Name: pb_Mesh17490
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1707,7 +1707,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-24132388
+  m_Name: pb_Mesh17504
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1896,9 +1896,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToFollow: {fileID: 0}
   cam: {fileID: 348301557}
+  actualCamera: {fileID: 1592785233}
   camFollow: 1
   camSmoothSpeed: 30
-  camSpeed: 10
+  camSpeed: 100
+  camPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &1891582848
 Transform:
   m_ObjectHideFlags: 0
@@ -1962,7 +1964,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 7578467976778116087, guid: a51b596dd7f7ed94e807e3da2ec48941, type: 3}
   enemies:
   - {fileID: 2025304815}
-  maxEnemiesPerRoom: 2
+  maxEnemiesPerRoom: 1
 --- !u!4 &1976803750
 Transform:
   m_ObjectHideFlags: 0
@@ -2040,6 +2042,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531625f92e76fc744a4d94d0bf33a7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allEnemiesMoveAtTheSameTime: 1
+  timeInBetweenMoves: 2
 --- !u!1 &2025304815
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,7 +2078,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd00f82302c458948bac51169d22670d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
 --- !u!114 &2025304817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2133,7 +2136,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bc1a378895db2894f91bb24f55467d7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

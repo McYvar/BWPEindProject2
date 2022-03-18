@@ -12,7 +12,6 @@ public class PlayerInEnemyTurn : BaseState
     public override void OnEnter()
     {
         GameStates.startEnemyTurn = true;
-        Debug.Log("entered other state");
     }
 
 

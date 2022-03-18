@@ -87,7 +87,7 @@ namespace TileBasedDungeonGeneration {
                 for (int i = 0; i < amount; i++)
                 {
                     GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 0.5f, Quaternion.identity);
-                    enemy.name = "Enemy" + j;
+                    enemy.name = "Enemy" + enemyQueue.Count;
                     enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
                 }
             }

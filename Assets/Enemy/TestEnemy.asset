@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: TestEnemy
   m_EditorClassIdentifier: 
   enemyName: Test
-  turns: 5
+  turns: 1
   health: 100
