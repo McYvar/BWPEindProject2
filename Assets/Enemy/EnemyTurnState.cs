@@ -1,12 +1,11 @@
 using UnityEngine;
 
-public class EnemyTurnState : BaseState
+public class EnemyTurnState : MovementBase
 {
     Enemy enemy;
     CameraBehaviour cam;
 
     float timer;
-    int turns;
 
     public override void OnAwake()
     {
@@ -46,7 +45,7 @@ public class EnemyTurnState : BaseState
     }
 
 
-    public void Move()
+    override public void Move()
     {
 
     }

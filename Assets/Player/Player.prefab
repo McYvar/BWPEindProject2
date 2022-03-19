@@ -644,7 +644,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8358771036521765754}
   - component: {fileID: 8358771036521765751}
-  - component: {fileID: 8358771036521765755}
+  - component: {fileID: 2013342177539002984}
   - component: {fileID: 6157512625732573590}
   - component: {fileID: 8358771036521765749}
   - component: {fileID: 8358771036521765748}
@@ -683,7 +683,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ab39d88245f22b438b93e78351f5362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8358771036521765755
+--- !u!114 &2013342177539002984
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -695,17 +695,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e674b2b68f5b24184eed7766dd2e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  playerHasTurns: 5
-  player: {fileID: 8358771036521765751}
-  normalSpeed: 5
-  maxFallDistance: 7
+  canMove: 1
+  moving: 1
+  canJump: 1
+  directionChange: 1
+  falling: 1
+  dead: 1
+  firstFloorTouch: 1
+  maxFallDistance: 10
+  speed: 1
   whatIsWall:
     serializedVersion: 2
     m_Bits: 328
   whatIsFloor:
     serializedVersion: 2
     m_Bits: 320
+  playerHasTurns: 5
 --- !u!114 &6157512625732573590
 MonoBehaviour:
   m_ObjectHideFlags: 0

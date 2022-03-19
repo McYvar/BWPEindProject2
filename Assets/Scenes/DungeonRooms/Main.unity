@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
+  m_IndirectSpecularColor: {r: 0.43667546, g: 0.48427135, b: 0.5645225, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -684,7 +684,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17490
+  m_Name: pb_Mesh18444
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1381,6 +1381,36 @@ Transform:
   m_Father: {fileID: 1976803750}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1382207560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1382207561}
+  m_Layer: 0
+  m_Name: HigherCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1382207561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382207560}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1891582848}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1592785233
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,7 +1737,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17504
+  m_Name: pb_Mesh18458
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1897,6 +1927,7 @@ MonoBehaviour:
   objectToFollow: {fileID: 0}
   cam: {fileID: 348301557}
   actualCamera: {fileID: 1592785233}
+  higherCamera: {fileID: 1382207560}
   camFollow: 1
   camSmoothSpeed: 30
   camSpeed: 100
@@ -1913,6 +1944,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 348301558}
+  - {fileID: 1382207561}
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2078,6 +2110,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd00f82302c458948bac51169d22670d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
+  moving: 0
+  canJump: 0
+  directionChange: 0
+  falling: 0
+  dead: 0
+  firstFloorTouch: 0
+  maxFallDistance: 0
+  speed: 0
+  whatIsWall:
+    serializedVersion: 2
+    m_Bits: 0
+  whatIsFloor:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &2025304817
 MonoBehaviour:
   m_ObjectHideFlags: 0

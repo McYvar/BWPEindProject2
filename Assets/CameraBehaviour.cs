@@ -7,6 +7,7 @@ public class CameraBehaviour : MonoBehaviour
     public GameObject objectToFollow;
     public GameObject cam;
     public GameObject actualCamera;
+    [SerializeField] GameObject higherCamera;
     public bool camFollow = true;
     Vector3 camVelocity = Vector3.zero;
     public float camSmoothSpeed, camSpeed;
@@ -16,7 +17,7 @@ public class CameraBehaviour : MonoBehaviour
     private void Start()
     {
         grid = FindObjectOfType<TileBasedDungeonGeneration.TileBasedDungeonGeneration>().GetGrid();
-        transform.position = new Vector3(grid.x / 2, 100, grid.y / 2);
+        cam.transform.position = new Vector3(grid.x / 2, 30, grid.y / 2);
     }
 
     void LateUpdate()
@@ -35,7 +36,8 @@ public class CameraBehaviour : MonoBehaviour
 
         if (GameStates.allEnemiesMoveAtTheSameTimeStatic && GameStates.isRunning)
         {
-            cam.transform.position = new Vector3(cam.transform.position.x, 10, cam.transform.position.z);
+            higherCamera.transform.position = new Vector3(objectToFollow.transform.position.x, higherCamera.transform.position.y, objectToFollow.transform.position.z);
+            objectToFollow = higherCamera;
         }
     }
 }
