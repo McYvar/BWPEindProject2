@@ -22,6 +22,7 @@ public class PlayerTurnState : MovementBase
     public override void OnEnter()
     {
         turns = playerHasTurns;
+        destination = transform.position;
     }
 
 

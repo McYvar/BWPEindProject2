@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class MovementBase : BaseState
 {
     public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
-    protected float normalSpeed;
+    public float normalSpeed;
     protected Vector3 nextPos, destination;
     protected int turns;
     protected Vector3 spawn;
@@ -17,15 +17,15 @@ public abstract class MovementBase : BaseState
         left = new Vector3(0, 270, 0),
         currentDirection = Vector3.zero;
 
-    public float maxFallDistance, speed;
+    protected float maxFallDistance = 10, speed;
     public LayerMask whatIsWall, whatIsFloor;
 
     public virtual void Move()
     {
+        Debug.Log(transform.position + "; " + destination);
         transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
         if (transform.position == destination) moving = false;
         else falling = true;
-        Debug.Log(transform.position + "; " + destination);
 
         InputCheck();
 
@@ -37,10 +37,9 @@ public abstract class MovementBase : BaseState
 
             if (!directionChange)
             {
-                turns--;
-
                 if (!CheckForwardDownWall())
                 {
+                    turns--;
                     // Jump two spaces forward
                     if (canJump && CheckForward(2.1f))
                     {

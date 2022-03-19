@@ -695,15 +695,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e674b2b68f5b24184eed7766dd2e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canMove: 1
-  moving: 1
-  canJump: 1
-  directionChange: 1
-  falling: 1
-  dead: 1
-  firstFloorTouch: 1
-  maxFallDistance: 10
-  speed: 1
+  canMove: 0
+  moving: 0
+  canJump: 0
+  directionChange: 0
+  falling: 0
+  dead: 0
+  firstFloorTouch: 0
+  normalSpeed: 4
   whatIsWall:
     serializedVersion: 2
     m_Bits: 328

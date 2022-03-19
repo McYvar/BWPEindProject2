@@ -68,7 +68,6 @@ public class GameStates : MonoBehaviour
         }
         else if (timer < 0 && allEnemiesMoveAtTheSameTime) enemyCount = 0;
         else if (allEnemiesMoveAtTheSameTime) timer -= Time.deltaTime;
-        Debug.Log(timer);
     }
 
     void DoEnemyTurn()
