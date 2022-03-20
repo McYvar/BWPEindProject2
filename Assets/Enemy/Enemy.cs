@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour, IDamagable
 {
     [SerializeField] EnemyInfo info;
 
+    public string enemyName;
     private int turns;
     public bool isTurn;
 
@@ -18,6 +19,7 @@ public class Enemy : MonoBehaviour, IDamagable
         fsm = new FiniteStateMachine(typeof(EnemyIdleState), GetComponents<BaseState>());
         turns = info.turns;
         setHealth(info.health);
+        enemyName = info.name;
     }
 
 

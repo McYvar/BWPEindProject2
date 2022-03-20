@@ -76,8 +76,7 @@ public class PlayerTurnState : MovementBase
     {
         base.Move();
     }
-
-
+    
     public override void InputCheck()
     {
         if (!moving && !dead)
@@ -85,49 +84,40 @@ public class PlayerTurnState : MovementBase
             if (PlayerInput.leftJoy.y > deadZone)
             {
                 CameraCheck();
-                currentDirection = up;
-                canMove = true;
+                GoUp();
             }
             if (PlayerInput.leftJoy.x > deadZone)
             {
                 CameraCheck();
-                currentDirection = right;
-                canMove = true;
+                GoRight();
             }
             if (PlayerInput.leftJoy.y < -deadZone)
             {
                 CameraCheck();
-                currentDirection = down;
-                canMove = true;
+                GoDown();
             }
             if (PlayerInput.leftJoy.x < -deadZone)
             {
                 CameraCheck();
-                currentDirection = left;
-                canMove = true;
+                GoLeft();
             }
             if (PlayerInput.southPressed)
             {
                 PlayerInput.southPressed = false;
                 CameraCheck();
-                canJump = true;
-                canMove = true;
+                DoJump();
             }
             if (PlayerInput.leftShoulderPressed)
             {
                 PlayerInput.leftShoulderPressed = false;
                 CameraCheck();
-                canMove = true;
-                directionChange = true;
-                currentDirection += new Vector3(0, -90, 0);
+                RotateLeft();
             }
             if (PlayerInput.rightShoulderPressed)
             {
                 PlayerInput.rightShoulderPressed = false;
                 CameraCheck();
-                canMove = true;
-                directionChange = true;
-                currentDirection += new Vector3(0, 90, 0);
+                RotateRight();
             }
         }
 

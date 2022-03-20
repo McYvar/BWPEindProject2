@@ -15,18 +15,21 @@ public class GameStates : MonoBehaviour
     float timer = 0;
     bool timerIsRunning;
 
+    Enemy enemyWithMostTurns;
+
     private void Start()
     {
         enemyQueue = TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue;
         allEnemiesMoveAtTheSameTimeStatic = allEnemiesMoveAtTheSameTime;
         timeInBetweenMovesStatic = timeInBetweenMoves;
-        timerIsRunning = true;
+        timerIsRunning = false;
     }
 
     private void Update()
     {
         if (startEnemyTurn)
         {
+            timerIsRunning = false;
             isRunning = true;
             ableToDequeue = true;
             startEnemyTurn = false;
@@ -43,25 +46,18 @@ public class GameStates : MonoBehaviour
             enemyCount--;
         }
 
-        if (allEnemiesMoveAtTheSameTime && !timerIsRunning)
-        {
-            timerIsRunning = true;
-            foreach (Enemy enemy in enemyQueue)
-            {
-                if (enemy.GetTurns() > timer) timer = enemy.GetTurns();
-            }
-            timer *= timeInBetweenMoves;
-        }
+        Timer();
 
         if (allEnemiesMoveAtTheSameTime)
         {
-            for (int i = 0; i < enemyCount; i++)
+            foreach (Enemy enemy in enemyQueue)
             {
-                DoEnemyTurn();
+                enemy.isTurn = true;
             }
         }
+        Debug.Log(enemyWithMostTurns);
 
-        if (enemyCount < 1)
+        if (enemyCount < 1 && !enemyWithMostTurns.isTurn)
         {
             TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue = enemyQueue;
             isRunning = false;
@@ -70,12 +66,30 @@ public class GameStates : MonoBehaviour
         else if (allEnemiesMoveAtTheSameTime) timer -= Time.deltaTime;
     }
 
+
     void DoEnemyTurn()
     {
         ableToDequeue = false;
         Enemy enemy = enemyQueue.Dequeue();
         enemy.isTurn = true;
         enemyQueue.Enqueue(enemy);
+    }
+
+
+    void Timer()
+    {
+        if (timerIsRunning) return;
+        timerIsRunning = true;
+        foreach (Enemy enemy in enemyQueue)
+        {
+            Debug.Log(enemy.enemyName);
+            if (enemy.GetTurns() > timer)
+            {
+                timer = enemy.GetTurns();
+                enemyWithMostTurns = enemy;
+            }
+        }
+        timer = (timer * timeInBetweenMoves) + 3;
     }
 
 }

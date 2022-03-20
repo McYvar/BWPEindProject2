@@ -24,10 +24,11 @@ namespace TileBasedDungeonGeneration {
         [SerializeField] int numRooms = 10;
 
         [SerializeField] GameObject floorPrefab;
-        [SerializeField] GameObject wallPrefab;
+        [SerializeField] GameObject borderPrefab;
+        [SerializeField] GameObject lightPrefab;
 
         [SerializeField] GameObject floorMapout;
-        [SerializeField] GameObject wallMapout;
+        [SerializeField] GameObject borderMapout;
         [SerializeField] List<GameObject> objectsToCombine;
 
         [SerializeField] GameObject playerPrefab;
@@ -44,7 +45,7 @@ namespace TileBasedDungeonGeneration {
 
             foreach (GameObject obj in objectsToCombine) CombineMeshes(obj);
 
-            SpawnEnemies();
+            SpawnObjects();
 
             SpawnPlayer();
         }
@@ -78,18 +79,32 @@ namespace TileBasedDungeonGeneration {
         }
         
 
-        void SpawnEnemies()
+        void SpawnObjects()
         {
             for (int j = 0; j < roomsList.Count; j++)
             {
                 Room room = roomsList[j];
-                int amount = Random.Range(0, maxEnemiesPerRoom + 1);
-                for (int i = 0; i < amount; i++)
-                {
-                    GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 0.5f, Quaternion.identity);
-                    enemy.name = "Enemy" + enemyQueue.Count;
-                    enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
-                }
+                SpawnEnemies(room);
+
+                SpawnLights(room);
+            }
+        }
+
+
+        void SpawnLights(Room room)
+        {
+            Instantiate(lightPrefab, room.GetCenter() + transform.up * 20, lightPrefab.transform.rotation, transform);
+        }
+
+
+        void SpawnEnemies(Room room)
+        {
+            int amount = Random.Range(0, maxEnemiesPerRoom + 1);
+            for (int i = 0; i < amount; i++)
+            {
+                GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5f, Quaternion.identity);
+                enemy.name = "Enemy" + enemyQueue.Count;
+                enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
             }
         }
 
@@ -132,7 +147,7 @@ namespace TileBasedDungeonGeneration {
                 switch (kv.Value)
                 {
                     case TileType.Floor: Instantiate(floorPrefab, kv.Key, Quaternion.identity, floorMapout.transform); break;
-                    case TileType.Wall: Instantiate(wallPrefab, kv.Key, Quaternion.identity, wallMapout.transform); break;
+                    case TileType.Wall: Instantiate(borderPrefab, kv.Key, Quaternion.identity, borderMapout.transform); break;
                 }
             }
         }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class MovementBase : BaseState
@@ -22,6 +20,10 @@ public abstract class MovementBase : BaseState
 
     public virtual void Move()
     {
+        canMove = false;
+        canJump = false;
+        directionChange = false;
+
         transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
         if (transform.position == destination)
         {
@@ -30,7 +32,6 @@ public abstract class MovementBase : BaseState
                 turns--;
                 moving = false;
             }
-            //destination = new Vector3Int((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
         }
         else falling = true;
 
@@ -44,67 +45,63 @@ public abstract class MovementBase : BaseState
 
             if (!directionChange)
             {
-                if (checkForBorder())
+                if (!checkForBorder(1f)) return;
+                if (canJump && !checkForBorder(2f)) return;
+
+                // Jump two spaces forward
+                if (canJump && CheckForward(1.6f))
                 {
-                    // Jump two spaces forward
-                    if (canJump && CheckForward(1.6f))
-                    {
-                        destination = transform.position + (2 * nextPos);
-                        canJump = false;
-                        moving = true;
-                        speed = 2f * normalSpeed;
-                    }
-                    // Jump two spaces forward over one space / Jump two spaces forward and one up
-                    else if (canJump && CheckForwardUp(1.6f))
-                    {
-                        destination = transform.position + (2 * nextPos) + transform.up;
-                        canJump = false;
-                        moving = true;
-                        speed = normalSpeed * 2f;
-                    }
-                    // Jump two spaces forward and two up (only if there is something in between)
-                    else if (canJump && CheckForwardUp(0.6f) && CheckForwardDoubleUp(1.6f))
-                    {
-                        destination = transform.position + (2 * nextPos) + (2 * transform.up);
-                        canJump = false;
-                        moving = true;
-                        speed = normalSpeed * 2f;
-                    }
-                    // Jump one space forward and two up
-                    else if (canJump && CheckForwardDoubleUp(0.6f) && CheckRoof())
-                    {
-                        destination = transform.position + nextPos + (2 * transform.up);
-                        canJump = false;
-                        moving = true;
-                        speed = normalSpeed;
-                    }
-                    // Move one space forward and down one
-                    else if (!CheckForwardDownForGround() && CheckForward(0.6f) && CheckForwardDownForSpace())
-                    {
-                        destination = transform.position + nextPos + -transform.up;
-                        moving = true;
-                        speed = normalSpeed;
-                    }
-                    // Move one space forward
-                    else if (CheckForward(0.6f))
-                    {
-                        destination = transform.position + nextPos;
-                        moving = true;
-                        speed = normalSpeed;
-                    }
-                    // Move one space forward and one up
-                    else if (CheckForwardUp(0.6f))
-                    {
-                        destination = transform.position + nextPos + transform.up;
-                        moving = true;
-                        speed = normalSpeed;
-                    }
+                    destination = transform.position + (2 * nextPos);
+                    canJump = false;
+                    moving = true;
+                    speed = 2f * normalSpeed;
+                }
+                // Jump two spaces forward over one space / Jump two spaces forward and one up
+                else if (canJump && CheckForwardUp(1.6f))
+                {
+                    destination = transform.position + (2 * nextPos) + transform.up;
+                    canJump = false;
+                    moving = true;
+                    speed = normalSpeed * 2f;
+                }
+                // Jump two spaces forward and two up (only if there is something in between)
+                else if (canJump && !CheckForward(0.6f) && CheckForwardUp(1.1f) && CheckForwardDoubleUp(1.6f))
+                {
+                    destination = transform.position + (2 * nextPos) + (2 * transform.up);
+                    canJump = false;
+                    moving = true;
+                    speed = normalSpeed * 2f;
+                }
+                // Jump one space forward and two up
+                else if (canJump && !CheckForward(0.6f) && !CheckForwardUp(0.6f) && CheckForwardDoubleUp(0.6f) && CheckRoof())
+                {
+                    destination = transform.position + nextPos + (2 * transform.up);
+                    canJump = false;
+                    moving = true;
+                    speed = normalSpeed;
+                }
+                // Move one space forward and down one
+                else if (!CheckForwardDownForGround() && CheckForward(0.6f) && CheckForwardDownForSpace())
+                {
+                    destination = transform.position + nextPos + -transform.up;
+                    moving = true;
+                    speed = normalSpeed;
+                }
+                // Move one space forward
+                else if (CheckForward(0.6f))
+                {
+                    destination = transform.position + nextPos;
+                    moving = true;
+                    speed = normalSpeed;
+                }
+                // Move one space forward and one up
+                else if (CheckForwardUp(0.6f))
+                {
+                    destination = transform.position + nextPos + transform.up;
+                    moving = true;
+                    speed = normalSpeed;
                 }
             }
-
-            canMove = false;
-            canJump = false;
-            directionChange = false;
         }
         else if (!moving)
         {
@@ -145,7 +142,6 @@ public abstract class MovementBase : BaseState
 
     public virtual void InputCheck()
     {
-
     }
 
 
@@ -154,24 +150,74 @@ public abstract class MovementBase : BaseState
     }
 
 
+    public void GoUp()
+    {
+        currentDirection = up;
+        canMove = true;
+    }
+
+
+    public void GoRight()
+    {
+        currentDirection = right;
+        canMove = true;
+    }
+
+
+    public void GoDown()
+    {
+        currentDirection = down;
+        canMove = true;
+    }
+
+
+    public void GoLeft()
+    {
+        currentDirection = left;
+        canMove = true;
+    }
+
+
+    public void DoJump()
+    {
+        canJump = true;
+        canMove = true;
+    }
+
+
+    public void RotateLeft()
+    {
+        canMove = true;
+        directionChange = true;
+        currentDirection += new Vector3(0, -90, 0);
+    }
+
+
+    public void RotateRight()
+    {
+        canMove = true;
+        directionChange = true;
+        currentDirection += new Vector3(0, 90, 0);
+    }
+
+
     #region Raycast checks
     bool ValidityCheck(Vector3 startingPosition, Vector3 direction, float rayLength, LayerMask mask)
     {
         Ray ray = new Ray(startingPosition, direction);
-        RaycastHit hit;
 
         Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.red);
 
-        if (Physics.Raycast(ray, out hit, rayLength, mask))
+        if (Physics.Raycast(ray, rayLength, mask, QueryTriggerInteraction.UseGlobal))
         {
             return false;
         }
         return true;
     }
 
-    bool checkForBorder()
+    bool checkForBorder(float tilesForward)
     {
-        return ValidityCheck(transform.position + transform.forward + transform.up * 10, -transform.up, 30, whatIsBorder);
+        return ValidityCheck(transform.position + transform.forward * tilesForward + transform.up * 100, -transform.up, Mathf.Infinity, whatIsBorder);
     }
 
 
@@ -229,7 +275,7 @@ public abstract class MovementBase : BaseState
 
         Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.yellow);
 
-        if (Physics.Raycast(ray, out hit, rayLength, whatIsFloor))
+        if (Physics.Raycast(ray, out hit, rayLength, whatIsFloor, QueryTriggerInteraction.UseGlobal))
         {
             return hit.transform.gameObject;
         }

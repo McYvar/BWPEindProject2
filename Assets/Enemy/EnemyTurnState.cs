@@ -29,13 +29,8 @@ public class EnemyTurnState : MovementBase
 
     public override void OnUpdate()
     {
-        if (timer > GameStates.timeInBetweenMovesStatic && Vector3.Distance(cam.camPosition, transform.position) < 2f)
-        {
-            Move();
-            timer = 0;
-            turns--;
-        }
-        else timer += Time.deltaTime;
+        Move();
+
         if (turns <= 0)
         {
             enemy.isTurn = false;
@@ -45,8 +40,19 @@ public class EnemyTurnState : MovementBase
     }
 
 
-    override public void Move()
+    public override void Move()
     {
+        if (timer > GameStates.timeInBetweenMovesStatic)
+        {
+            base.Move();
+            if (!moving) timer = 0;
+        }
+        else timer += Time.deltaTime;
+    }
 
+
+    public override void InputCheck()
+    {
+        GoLeft();
     }
 }
