@@ -4,27 +4,34 @@ using UnityEngine;
 
 public abstract class MovementBase : BaseState
 {
-    public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
-    public float normalSpeed;
+    protected bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     protected Vector3 nextPos, destination;
     protected int turns;
     protected Vector3 spawn;
     protected float fallDistance, deadTimer;
-    
+    protected float maxFallDistance = 10, speed;
+
     protected Vector3 up = Vector3.zero,
         right = new Vector3(0, 90, 0),
         down = new Vector3(0, 180, 0),
         left = new Vector3(0, 270, 0),
         currentDirection = Vector3.zero;
 
-    protected float maxFallDistance = 10, speed;
-    public LayerMask whatIsWall, whatIsFloor;
+    public float normalSpeed;
+    public LayerMask whatIsWall, whatIsFloor, whatIsBorder;
 
     public virtual void Move()
     {
-        Debug.Log(transform.position + "; " + destination);
         transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
-        if (transform.position == destination) moving = false;
+        if (transform.position == destination)
+        {
+            if (moving)
+            {
+                turns--;
+                moving = false;
+            }
+            //destination = new Vector3Int((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+        }
         else falling = true;
 
         InputCheck();
@@ -37,19 +44,18 @@ public abstract class MovementBase : BaseState
 
             if (!directionChange)
             {
-                if (!CheckForwardDownWall())
+                if (checkForBorder())
                 {
-                    turns--;
                     // Jump two spaces forward
-                    if (canJump && CheckForward(2.1f))
+                    if (canJump && CheckForward(1.6f))
                     {
                         destination = transform.position + (2 * nextPos);
                         canJump = false;
                         moving = true;
                         speed = 2f * normalSpeed;
                     }
-                    // Jump two spaces forward over one space
-                    else if (canJump && CheckForwardUp(2.1f))
+                    // Jump two spaces forward over one space / Jump two spaces forward and one up
+                    else if (canJump && CheckForwardUp(1.6f))
                     {
                         destination = transform.position + (2 * nextPos) + Vector3.up;
                         canJump = false;
@@ -57,7 +63,7 @@ public abstract class MovementBase : BaseState
                         speed = normalSpeed * 2f;
                     }
                     // Jump two spaces forward and two up (only if there is something in between)
-                    else if (canJump && CheckForwardUp(1.1f) && CheckForwardDoubleUp(2.1f))
+                    else if (canJump && CheckForwardUp(0.6f) && CheckForwardDoubleUp(1.6f))
                     {
                         destination = transform.position + (2 * nextPos) + (2 * Vector3.up);
                         canJump = false;
@@ -65,7 +71,7 @@ public abstract class MovementBase : BaseState
                         speed = normalSpeed * 2f;
                     }
                     // Jump one space forward and two up
-                    else if (canJump && CheckForwardDoubleUp(1.1f) && CheckRoof())
+                    else if (canJump && CheckForwardDoubleUp(0.6f) && CheckRoof())
                     {
                         destination = transform.position + nextPos + (2 * Vector3.up);
                         canJump = false;
@@ -73,21 +79,21 @@ public abstract class MovementBase : BaseState
                         speed = normalSpeed;
                     }
                     // Move one space forward and down one
-                    else if (!CheckForwardDownForGround() && CheckForward(1.1f) && CheckForwardDownForSpace())
+                    else if (!CheckForwardDownForGround() && CheckForward(0.6f) && CheckForwardDownForSpace())
                     {
                         destination = transform.position + nextPos + Vector3.down;
                         moving = true;
                         speed = normalSpeed;
                     }
                     // Move one space forward
-                    else if (CheckForward(1.1f))
+                    else if (CheckForward(0.6f))
                     {
                         destination = transform.position + nextPos;
                         moving = true;
                         speed = normalSpeed;
                     }
                     // Move one space forward and one up
-                    else if (CheckForwardUp(1.1f))
+                    else if (CheckForwardUp(0.6f))
                     {
                         destination = transform.position + nextPos + Vector3.up;
                         moving = true;
@@ -107,10 +113,14 @@ public abstract class MovementBase : BaseState
                 Vector3 temp;
                 if (floor.CompareTag("Floater"))
                 {
-                    temp = new Vector3(floor.transform.position.x + 0.5f, floor.transform.position.y + 1f, floor.transform.position.z - 0.5f);
+                    temp = new Vector3(floor.transform.position.x, floor.transform.position.y + 1f, floor.transform.position.z);
                     destination = temp;
                 }
-                //else temp = new Vector3(transform.position.x, floor.transform.position.y + 1f, transform.position.z);
+                else
+                {
+                    temp = new Vector3(transform.position.x, floor.transform.position.y + 1f, transform.position.z);
+                    destination = temp;
+                }
                 fallDistance = 0;
                 speed = Mathf.Infinity;
                 falling = false;
@@ -125,32 +135,22 @@ public abstract class MovementBase : BaseState
                 if (currentFallDistance > fallDistance) fallDistance = currentFallDistance;
                 if (fallDistance > maxFallDistance && firstFloorTouch)
                 {
-                    DeadAndRespawn();
+                    Deadbehaviour();
                 }
             }
         }
-        if (dead) DeadAndRespawn();
+        if (dead) Deadbehaviour();
     }
+
 
     public virtual void InputCheck()
     {
 
     }
 
-    public virtual void DeadAndRespawn()
+
+    public virtual void Deadbehaviour()
     {
-        if (!dead) deadTimer = 3;
-        if (deadTimer < 0)
-        {
-            if (dead) transform.position = spawn;
-            dead = false;
-            firstFloorTouch = false;
-        }
-        else
-        {
-            dead = true;
-            deadTimer -= Time.deltaTime;
-        }
     }
 
 
@@ -169,9 +169,9 @@ public abstract class MovementBase : BaseState
         return true;
     }
 
-    bool CheckForwardDownWall()
+    bool checkForBorder()
     {
-        return ValidityCheck(transform.position + transform.forward + transform.up * 10, -transform.up, 30, whatIsFloor);
+        return ValidityCheck(transform.position + transform.forward + transform.up * 10, -transform.up, 30, whatIsBorder);
     }
 
 
@@ -183,7 +183,7 @@ public abstract class MovementBase : BaseState
 
     bool CheckForwardUp(float length)
     {
-        return ValidityCheck(transform.position + transform.up * 1f, transform.forward, length, whatIsWall);
+        return ValidityCheck(transform.position + transform.up, transform.forward, length, whatIsWall);
     }
 
 
@@ -213,7 +213,7 @@ public abstract class MovementBase : BaseState
     float CheckFallDistance()
     {
         RaycastHit hit;
-        Ray ray = new Ray(transform.position - transform.up * 0.4f, -transform.up);
+        Ray ray = new Ray(transform.position - transform.up, -transform.up);
         if (Physics.Raycast(ray, out hit, 1000, whatIsFloor, QueryTriggerInteraction.UseGlobal))
         {
             return Vector3.Distance(hit.point, transform.position);

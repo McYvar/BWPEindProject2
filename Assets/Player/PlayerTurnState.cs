@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class PlayerTurnState : MovementBase
@@ -6,12 +5,11 @@ public class PlayerTurnState : MovementBase
     GameObject cam;
     public int playerHasTurns;
     float deadZone = 0.7f;
-    
+
     public override void OnAwake()
     {
         currentDirection = up;
         nextPos = transform.forward;
-        destination = transform.position;
         speed = normalSpeed;
         spawn = transform.position;
 
@@ -22,7 +20,7 @@ public class PlayerTurnState : MovementBase
     public override void OnEnter()
     {
         turns = playerHasTurns;
-        destination = transform.position;
+        canMove = false;
     }
 
 
@@ -36,7 +34,6 @@ public class PlayerTurnState : MovementBase
     {
         Move();
         if (turns <= 0 && !moving) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
-
 
         cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
     }
@@ -74,10 +71,12 @@ public class PlayerTurnState : MovementBase
         }
     }
 
+
     public override void Move()
     {
         base.Move();
     }
+
 
     public override void InputCheck()
     {
@@ -134,7 +133,23 @@ public class PlayerTurnState : MovementBase
 
         if (PlayerInput.westPressed) speed = 2 * normalSpeed;
         else speed = normalSpeed;
-        base.InputCheck();
+    }
+
+
+    public override void Deadbehaviour()
+    {
+        if (!dead) deadTimer = 3;
+        if (deadTimer < 0)
+        {
+            if (dead) transform.position = spawn;
+            dead = false;
+            firstFloorTouch = false;
+        }
+        else
+        {
+            dead = true;
+            deadTimer -= Time.deltaTime;
+        }
     }
 
 }
