@@ -57,7 +57,7 @@ public abstract class MovementBase : BaseState
                     // Jump two spaces forward over one space / Jump two spaces forward and one up
                     else if (canJump && CheckForwardUp(1.6f))
                     {
-                        destination = transform.position + (2 * nextPos) + Vector3.up;
+                        destination = transform.position + (2 * nextPos) + transform.up;
                         canJump = false;
                         moving = true;
                         speed = normalSpeed * 2f;
@@ -65,7 +65,7 @@ public abstract class MovementBase : BaseState
                     // Jump two spaces forward and two up (only if there is something in between)
                     else if (canJump && CheckForwardUp(0.6f) && CheckForwardDoubleUp(1.6f))
                     {
-                        destination = transform.position + (2 * nextPos) + (2 * Vector3.up);
+                        destination = transform.position + (2 * nextPos) + (2 * transform.up);
                         canJump = false;
                         moving = true;
                         speed = normalSpeed * 2f;
@@ -73,7 +73,7 @@ public abstract class MovementBase : BaseState
                     // Jump one space forward and two up
                     else if (canJump && CheckForwardDoubleUp(0.6f) && CheckRoof())
                     {
-                        destination = transform.position + nextPos + (2 * Vector3.up);
+                        destination = transform.position + nextPos + (2 * transform.up);
                         canJump = false;
                         moving = true;
                         speed = normalSpeed;
@@ -81,7 +81,7 @@ public abstract class MovementBase : BaseState
                     // Move one space forward and down one
                     else if (!CheckForwardDownForGround() && CheckForward(0.6f) && CheckForwardDownForSpace())
                     {
-                        destination = transform.position + nextPos + Vector3.down;
+                        destination = transform.position + nextPos + -transform.up;
                         moving = true;
                         speed = normalSpeed;
                     }
@@ -95,7 +95,7 @@ public abstract class MovementBase : BaseState
                     // Move one space forward and one up
                     else if (CheckForwardUp(0.6f))
                     {
-                        destination = transform.position + nextPos + Vector3.up;
+                        destination = transform.position + nextPos + transform.up;
                         moving = true;
                         speed = normalSpeed;
                     }
@@ -128,7 +128,7 @@ public abstract class MovementBase : BaseState
             }
             else
             {
-                destination = transform.position + Vector3.down;
+                destination = transform.position + -transform.up;
                 speed = 30;
 
                 float currentFallDistance = CheckFallDistance();
