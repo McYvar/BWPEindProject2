@@ -13,6 +13,7 @@ public class EnemyIdleState : MovementBase
 
     public override void OnEnter()
     {
+        destination = transform.position;
     }
 
 
@@ -24,7 +25,6 @@ public class EnemyIdleState : MovementBase
     public override void OnUpdate()
     {
         Move();
-
         if (enemy.isTurn) stateManager.SwitchState(typeof(EnemyTurnState));
     }
 
@@ -32,5 +32,10 @@ public class EnemyIdleState : MovementBase
     public override void Move()
     {
         base.Move();
+    }
+
+
+    public override void InputCheck()
+    {
     }
 }

@@ -111,7 +111,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: {fileID: 11400000, guid: c7105448268c4824ba45ba2f7cd88202, type: 2}
+  enemyName: 
   isTurn: 0
+  isJumperEnemy: 0
+  attackRange: 0
 --- !u!114 &832800474629901660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f649601b3911842bb3fa95968ed54a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
+  moving: 0
+  canJump: 0
+  directionChange: 0
+  falling: 0
+  dead: 0
+  firstFloorTouch: 0
   normalSpeed: 4
   whatIsWall:
     serializedVersion: 2
@@ -146,6 +156,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd00f82302c458948bac51169d22670d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
+  moving: 0
+  canJump: 0
+  directionChange: 0
+  falling: 0
+  dead: 0
+  firstFloorTouch: 0
   normalSpeed: 4
   whatIsWall:
     serializedVersion: 2
@@ -156,3 +173,6 @@ MonoBehaviour:
   whatIsBorder:
     serializedVersion: 2
     m_Bits: 512
+  whatIsPlayer:
+    serializedVersion: 2
+    m_Bits: 1024

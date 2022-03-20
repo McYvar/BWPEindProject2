@@ -3908,7 +3908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531625f92e76fc744a4d94d0bf33a7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allEnemiesMoveAtTheSameTime: 0
+  allEnemiesMoveAtTheSameTime: 1
   timeInBetweenMoves: 0.4
 --- !u!1 &2008945088
 GameObject:
@@ -4651,9 +4651,9 @@ Light:
   m_Shape: 0
   m_Color: {r: 0, g: 0.5643854, b: 1, a: 1}
   m_Intensity: 50
-  m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_Range: 21
+  m_SpotAngle: 13.2
+  m_InnerSpotAngle: 10.3
   m_CookieSize: 10
   m_Shadows:
     m_Type: 1
@@ -4708,7 +4708,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139584955}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -18, y: 9.5, z: 11}
+  m_LocalPosition: {x: -18, y: 20, z: 11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

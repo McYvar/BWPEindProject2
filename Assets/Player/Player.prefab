@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7578467975102194971}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7578467975278176160}
   - component: {fileID: 7578467975278176167}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: OuterCubeHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 7578467975546783722}
   - component: {fileID: 7578467975546783723}
   - component: {fileID: 7578467975546783716}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Heart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7578467975821687524}
   - component: {fileID: 7578467975821687531}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cubeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 7578467975828769164}
   - component: {fileID: 7578467975828769165}
   - component: {fileID: 7578467975828769166}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 7578467976339680655}
   - component: {fileID: 7578467976339680648}
   - component: {fileID: 7578467976339680649}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -424,7 +424,7 @@ GameObject:
   - component: {fileID: 7578467976538527706}
   - component: {fileID: 7578467976538527707}
   - component: {fileID: 7578467976538527700}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -550,7 +550,7 @@ GameObject:
   - component: {fileID: 7578467976791041277}
   - component: {fileID: 7578467976791041278}
   - component: {fileID: 7578467976791041279}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: OuterCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 6157512625732573590}
   - component: {fileID: 8358771036521765749}
   - component: {fileID: 8358771036521765748}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PlayerController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -695,6 +695,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e674b2b68f5b24184eed7766dd2e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
+  moving: 0
+  canJump: 0
+  directionChange: 0
+  falling: 0
+  dead: 0
+  firstFloorTouch: 0
   normalSpeed: 4
   whatIsWall:
     serializedVersion: 2

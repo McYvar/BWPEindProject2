@@ -15,3 +15,5 @@ MonoBehaviour:
   enemyName: Richard
   turns: 3
   health: 200
+  doesEnemyJump: 0
+  attackRange: 2

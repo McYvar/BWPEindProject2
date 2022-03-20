@@ -111,7 +111,9 @@ namespace TileBasedDungeonGeneration {
 
         void SpawnPlayer()
         {
-            Instantiate(playerPrefab, roomsList[0].GetCenter() + Vector3.up * 5, Quaternion.identity);
+            GameObject playerHolder = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            GameObject player = FindObjectOfType<Player>().gameObject;
+            player.transform.position = new Vector3Int((int) roomsList[0].GetCenter().x, 5, (int)roomsList[0].GetCenter().z);
         }
 
         public bool DoesRoomExists(Room room)

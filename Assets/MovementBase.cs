@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class MovementBase : BaseState
 {
-    protected bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
+    public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     protected Vector3 nextPos, destination;
     protected int turns;
     protected Vector3 spawn;
@@ -221,7 +221,7 @@ public abstract class MovementBase : BaseState
     }
 
 
-    bool CheckForward(float length)
+    protected bool CheckForward(float length)
     {
         return ValidityCheck(transform.position, transform.forward, length, whatIsWall);
     }

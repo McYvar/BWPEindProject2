@@ -9,6 +9,8 @@ public class Enemy : MonoBehaviour, IDamagable
     public string enemyName;
     private int turns;
     public bool isTurn;
+    public bool isJumperEnemy;
+    public float attackRange;
 
     public int healt { get; set; }
 
@@ -19,7 +21,9 @@ public class Enemy : MonoBehaviour, IDamagable
         fsm = new FiniteStateMachine(typeof(EnemyIdleState), GetComponents<BaseState>());
         turns = info.turns;
         setHealth(info.health);
-        enemyName = info.name;
+        enemyName = info.enemyName;
+        attackRange = info.attackRange;
+        isJumperEnemy = info.doesEnemyJump;
     }
 
 

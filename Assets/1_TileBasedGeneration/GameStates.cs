@@ -12,10 +12,11 @@ public class GameStates : MonoBehaviour
     public static float timeInBetweenMovesStatic;
     Queue<Enemy> enemyQueue;
     int enemyCount;
-    float timer = 0;
+    float timer;
     bool timerIsRunning;
+    bool anotherBool;
 
-    Enemy enemyWithMostTurns;
+    Enemy activeEnemy;
 
     private void Start()
     {
@@ -27,37 +28,44 @@ public class GameStates : MonoBehaviour
 
     private void Update()
     {
+        // Run once in the update function
         if (startEnemyTurn)
         {
+            anotherBool = true;
             timerIsRunning = false;
             isRunning = true;
             ableToDequeue = true;
             startEnemyTurn = false;
             enemyQueue = TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue;
             enemyCount = enemyQueue.Count;
-            timer = 1;
+            timer = 0;
         }
 
         if (!isRunning) return;
 
+        // If enemies move one by one, they have to wait for each other to finish their moves
         if (ableToDequeue && enemyCount > 0 && !allEnemiesMoveAtTheSameTime)
         {
             DoEnemyTurn();
             enemyCount--;
         }
 
-        Timer();
+        // If enemies move all at the same time, then a timer is used for the enemy that has the longest turns
+        SetTimeForLastEnemy();
 
-        if (allEnemiesMoveAtTheSameTime)
+        // Then all enemies get to move at the same time
+        if (allEnemiesMoveAtTheSameTime && anotherBool)
         {
+            anotherBool = false;
+            ableToDequeue = false;
             foreach (Enemy enemy in enemyQueue)
             {
                 enemy.isTurn = true;
             }
         }
-        Debug.Log(enemyWithMostTurns);
 
-        if (enemyCount < 1 && !enemyWithMostTurns.isTurn)
+        // Once the enemy count is set to 0, and the last/longest active enemy has finished its turn, then this piece of code stops running
+        if (enemyCount < 1 && !activeEnemy.isTurn)
         {
             TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue = enemyQueue;
             isRunning = false;
@@ -72,21 +80,21 @@ public class GameStates : MonoBehaviour
         ableToDequeue = false;
         Enemy enemy = enemyQueue.Dequeue();
         enemy.isTurn = true;
+        activeEnemy = enemy;
         enemyQueue.Enqueue(enemy);
     }
 
 
-    void Timer()
+    void SetTimeForLastEnemy()
     {
         if (timerIsRunning) return;
         timerIsRunning = true;
         foreach (Enemy enemy in enemyQueue)
         {
-            Debug.Log(enemy.enemyName);
             if (enemy.GetTurns() > timer)
             {
                 timer = enemy.GetTurns();
-                enemyWithMostTurns = enemy;
+                activeEnemy = enemy;
             }
         }
         timer = (timer * timeInBetweenMoves) + 3;
