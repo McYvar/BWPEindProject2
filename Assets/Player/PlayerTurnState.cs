@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerTurnState : MovementBase
 {
-    GameObject cam;
+    CameraBehaviour cam;
     public int playerHasTurns;
     float deadZone = 0.7f;
 
@@ -11,9 +11,10 @@ public class PlayerTurnState : MovementBase
         currentDirection = up;
         nextPos = transform.forward;
         speed = normalSpeed;
-        spawn = transform.position;
+        spawn = new Vector3Int((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
+        destination = spawn;
 
-        cam = FindObjectOfType<CameraBehaviour>().gameObject;
+        cam = FindObjectOfType<CameraBehaviour>();
     }
 
 
@@ -41,33 +42,33 @@ public class PlayerTurnState : MovementBase
 
     void CameraCheck()
     {
-        if ((cam.transform.localEulerAngles.y > 0 && cam.transform.localEulerAngles.y <= 45) || (cam.transform.localEulerAngles.y > 315 && cam.transform.localEulerAngles.y <= 360))
+        if ((cam.cam.transform.localEulerAngles.y > 0 && cam.cam.transform.localEulerAngles.y <= 45) || (cam.cam.transform.localEulerAngles.y > 315 && cam.cam.transform.localEulerAngles.y <= 360))
         {
-            up = Vector3.zero;
-            right = new Vector3(0, 90, 0);
-            down = new Vector3(0, 180, 0);
-            left = new Vector3(0, 270, 0);
+            up = Vector3Int.zero;
+            right = new Vector3Int(0, 90, 0);
+            down = new Vector3Int(0, 180, 0);
+            left = new Vector3Int(0, 270, 0);
         }
-        else if (cam.transform.localEulerAngles.y > 45 && cam.transform.localEulerAngles.y <= 135)
+        else if (cam.cam.transform.localEulerAngles.y > 45 && cam.cam.transform.localEulerAngles.y <= 135)
         {
-            left = Vector3.zero;
-            up = new Vector3(0, 90, 0);
-            right = new Vector3(0, 180, 0);
-            down = new Vector3(0, 270, 0);
+            left = Vector3Int.zero;
+            up = new Vector3Int(0, 90, 0);
+            right = new Vector3Int(0, 180, 0);
+            down = new Vector3Int(0, 270, 0);
         }
-        else if (cam.transform.localEulerAngles.y > 135 && cam.transform.localEulerAngles.y <= 225)
+        else if (cam.cam.transform.localEulerAngles.y > 135 && cam.cam.transform.localEulerAngles.y <= 225)
         {
-            down = Vector3.zero;
-            left = new Vector3(0, 90, 0);
-            up = new Vector3(0, 180, 0);
-            right = new Vector3(0, 270, 0);
+            down = Vector3Int.zero;
+            left = new Vector3Int(0, 90, 0);
+            up = new Vector3Int(0, 180, 0);
+            right = new Vector3Int(0, 270, 0);
         }
-        else if (cam.transform.localEulerAngles.y > 225 && cam.transform.localEulerAngles.y <= 315)
+        else if (cam.cam.transform.localEulerAngles.y > 225 && cam.cam.transform.localEulerAngles.y <= 315)
         {
-            right = Vector3.zero;
-            down = new Vector3(0, 90, 0);
-            left = new Vector3(0, 180, 0);
-            up = new Vector3(0, 270, 0);
+            right = Vector3Int.zero;
+            down = new Vector3Int(0, 90, 0);
+            left = new Vector3Int(0, 180, 0);
+            up = new Vector3Int(0, 270, 0);
         }
     }
 

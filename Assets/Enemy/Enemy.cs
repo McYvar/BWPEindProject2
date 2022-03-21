@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour, IDamagable
     public bool isTurn;
     public bool isJumperEnemy;
     public float attackRange;
+    public float detectRange;
 
     public int healt { get; set; }
 
@@ -24,6 +25,7 @@ public class Enemy : MonoBehaviour, IDamagable
         enemyName = info.enemyName;
         attackRange = info.attackRange;
         isJumperEnemy = info.doesEnemyJump;
+        detectRange = info.detectRange;
     }
 
 

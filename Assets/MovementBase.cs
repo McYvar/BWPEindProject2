@@ -5,15 +5,15 @@ public abstract class MovementBase : BaseState
     public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     protected Vector3 nextPos, destination;
     protected int turns;
-    protected Vector3 spawn;
+    protected Vector3Int spawn;
     protected float fallDistance, deadTimer;
     protected float maxFallDistance = 10, speed;
 
-    protected Vector3 up = Vector3.zero,
-        right = new Vector3(0, 90, 0),
-        down = new Vector3(0, 180, 0),
-        left = new Vector3(0, 270, 0),
-        currentDirection = Vector3.zero;
+    protected Vector3Int up = Vector3Int.zero,
+        right = new Vector3Int(0, 90, 0),
+        down = new Vector3Int(0, 180, 0),
+        left = new Vector3Int(0, 270, 0),
+        currentDirection = Vector3Int.zero;
 
     public float normalSpeed;
     public LayerMask whatIsWall, whatIsFloor, whatIsBorder;
@@ -137,6 +137,7 @@ public abstract class MovementBase : BaseState
             }
         }
         if (dead) Deadbehaviour();
+        destination = Vector3Int.RoundToInt(destination);
     }
 
 
@@ -189,7 +190,7 @@ public abstract class MovementBase : BaseState
     {
         canMove = true;
         directionChange = true;
-        currentDirection += new Vector3(0, -90, 0);
+        currentDirection += new Vector3Int(0, -90, 0);
     }
 
 
@@ -197,12 +198,12 @@ public abstract class MovementBase : BaseState
     {
         canMove = true;
         directionChange = true;
-        currentDirection += new Vector3(0, 90, 0);
+        currentDirection += new Vector3Int(0, 90, 0);
     }
 
 
     #region Raycast checks
-    bool ValidityCheck(Vector3 startingPosition, Vector3 direction, float rayLength, LayerMask mask)
+    protected bool ValidityCheck(Vector3 startingPosition, Vector3 direction, float rayLength, LayerMask mask)
     {
         Ray ray = new Ray(startingPosition, direction);
 

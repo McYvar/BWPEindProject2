@@ -93,7 +93,7 @@ namespace TileBasedDungeonGeneration {
 
         void SpawnLights(Room room)
         {
-            Instantiate(lightPrefab, room.GetCenter() + transform.up * 20, lightPrefab.transform.rotation, transform);
+            Instantiate(lightPrefab, room.GetCenter() + transform.up * 30, lightPrefab.transform.rotation, transform);
         }
 
 
@@ -113,8 +113,9 @@ namespace TileBasedDungeonGeneration {
         {
             GameObject playerHolder = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
             GameObject player = FindObjectOfType<Player>().gameObject;
-            player.transform.position = new Vector3Int((int) roomsList[0].GetCenter().x, 5, (int)roomsList[0].GetCenter().z);
+            player.transform.position = new Vector3Int(roomsList[0].GetCenter().x, 5, roomsList[0].GetCenter().z);
         }
+
 
         public bool DoesRoomExists(Room room)
         {

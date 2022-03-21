@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1522,7 +1522,7 @@ Transform:
   m_GameObject: {fileID: 1249232273}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 1, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
@@ -2260,7 +2260,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1382207560}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3053,13 +3053,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1592785233}
-  m_LocalRotation: {x: 0.45780024, y: -0, z: -0, w: 0.8890551}
-  m_LocalPosition: {x: 0, y: 4, z: -3.5}
+  m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
+  m_LocalPosition: {x: 0, y: 4, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 348301558}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 54.49, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
 --- !u!114 &1592785235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3817,7 +3817,7 @@ MonoBehaviour:
   roomSizeMin: 5
   roomSizeMax: 10
   minDistanceBetweenRooms: 1
-  numRooms: 6
+  numRooms: 20
   floorPrefab: {fileID: 396903535}
   borderPrefab: {fileID: 1249232273}
   lightPrefab: {fileID: 2139584955}
@@ -3830,7 +3830,7 @@ MonoBehaviour:
   enemies:
   - {fileID: 832800474629901634, guid: b08fa69dcbcbbd84ebede573a345b664, type: 3}
   - {fileID: 832800474629901634, guid: d51339bda02c461478c226c500e14814, type: 3}
-  maxEnemiesPerRoom: 1
+  maxEnemiesPerRoom: 8
 --- !u!4 &1976803750
 Transform:
   m_ObjectHideFlags: 0
@@ -3909,7 +3909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allEnemiesMoveAtTheSameTime: 1
-  timeInBetweenMoves: 0.4
+  timeInBetweenMoves: 0.1
 --- !u!1 &2008945088
 GameObject:
   m_ObjectHideFlags: 0
@@ -4649,9 +4649,9 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 0, g: 0.5643854, b: 1, a: 1}
-  m_Intensity: 50
-  m_Range: 21
+  m_Color: {r: 0.9740486, g: 1, b: 0, a: 1}
+  m_Intensity: 100
+  m_Range: 35
   m_SpotAngle: 13.2
   m_InnerSpotAngle: 10.3
   m_CookieSize: 10
@@ -4708,7 +4708,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139584955}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -18, y: 20, z: 11}
+  m_LocalPosition: {x: -18, y: 30, z: 11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

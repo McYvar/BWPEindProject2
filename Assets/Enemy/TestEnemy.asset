@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: TestEnemy
   m_EditorClassIdentifier: 
   enemyName: John
-  turns: 1
+  turns: 2
   health: 100
-  doesEnemyJump: 1
+  doesEnemyJump: 0
   attackRange: 3
+  detectRange: 10

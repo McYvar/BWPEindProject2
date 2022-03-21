@@ -10,4 +10,5 @@ public class EnemyInfo : ScriptableObject
     public int health;
     public bool doesEnemyJump;
     public float attackRange;
+    public float detectRange;
 }

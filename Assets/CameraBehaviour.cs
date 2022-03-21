@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraBehaviour : MonoBehaviour
@@ -14,8 +12,11 @@ public class CameraBehaviour : MonoBehaviour
     public Vector3 camPosition;
     Vector2 grid;
 
+    float originalXRotation;
+
     private void Start()
     {
+        originalXRotation = actualCamera.transform.eulerAngles.x;
         grid = FindObjectOfType<TileBasedDungeonGeneration.TileBasedDungeonGeneration>().GetGrid();
         cam.transform.position = new Vector3(grid.x / 2, 30, grid.y / 2);
     }
