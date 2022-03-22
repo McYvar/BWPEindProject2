@@ -53,7 +53,7 @@ public class EnemyTurnState : MovementBase
             {
                 turns = 0;
                 doAttack = true;
-                Debug.Log("do attack");
+                player.GetComponent<IDamagable>().takeDamage(enemy.dealsDamage);
             }
             base.Move();
 

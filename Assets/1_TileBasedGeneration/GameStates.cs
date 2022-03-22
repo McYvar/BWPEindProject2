@@ -1,9 +1,12 @@
+using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStates : MonoBehaviour
 {
     public static bool startEnemyTurn;
+    bool startPlayerTurn;
     public static bool isRunning;
     public static bool ableToDequeue;
     [SerializeField] bool allEnemiesMoveAtTheSameTime;
@@ -18,19 +21,30 @@ public class GameStates : MonoBehaviour
 
     Enemy activeEnemy;
 
+    // text related stuff
+    [SerializeField] TMP_Text TurnDisplay;
+
     private void Start()
     {
         enemyQueue = TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue;
         allEnemiesMoveAtTheSameTimeStatic = allEnemiesMoveAtTheSameTime;
         timeInBetweenMovesStatic = timeInBetweenMoves;
         timerIsRunning = false;
+        startPlayerTurn = true;
     }
 
     private void Update()
     {
         // Run once in the update function
+        if (startPlayerTurn)
+        {
+            startPlayerTurn = false;
+            StartCoroutine(PlayerTurnDisplay());
+        }
+
         if (startEnemyTurn)
         {
+            StartCoroutine(EnemyTurnDisplay());
             anotherBool = true;
             timerIsRunning = false;
             isRunning = true;
@@ -69,6 +83,7 @@ public class GameStates : MonoBehaviour
         {
             TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue = enemyQueue;
             isRunning = false;
+            startPlayerTurn = true;
         }
         else if (timer < 0 && allEnemiesMoveAtTheSameTime) enemyCount = 0;
         else if (allEnemiesMoveAtTheSameTime) timer -= Time.deltaTime;
@@ -98,6 +113,24 @@ public class GameStates : MonoBehaviour
             }
         }
         timer = (timer * timeInBetweenMoves) + 3;
+    }
+
+
+    IEnumerator EnemyTurnDisplay()
+    {
+        TurnDisplay.enabled = true;
+        TurnDisplay.text = "Enemy Turn";
+        yield return new WaitForSeconds(1);
+        TurnDisplay.enabled = false;
+    }
+
+
+    IEnumerator PlayerTurnDisplay()
+    {
+        TurnDisplay.enabled = true;
+        TurnDisplay.text = "PLayer Turn";
+        yield return new WaitForSeconds(1);
+        TurnDisplay.enabled = false;
     }
 
 }

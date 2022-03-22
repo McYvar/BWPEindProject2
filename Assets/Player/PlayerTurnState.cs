@@ -1,13 +1,17 @@
 using UnityEngine;
+using TMPro;
 
 public class PlayerTurnState : MovementBase
 {
+    [SerializeField] TMP_Text turnsDisplay;
+    Player player;
     CameraBehaviour cam;
     public int playerHasTurns;
     float deadZone = 0.7f;
 
     public override void OnAwake()
     {
+        player = GetComponent<Player>();
         currentDirection = up;
         nextPos = transform.forward;
         speed = normalSpeed;
@@ -22,12 +26,13 @@ public class PlayerTurnState : MovementBase
     {
         turns = playerHasTurns;
         canMove = false;
+        turnsDisplay.enabled = true;
     }
 
 
     public override void OnExit()
     {
-
+        turnsDisplay.enabled = false;
     }
 
 
@@ -37,6 +42,7 @@ public class PlayerTurnState : MovementBase
         if (turns <= 0 && !moving) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
 
         cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
+        turnsDisplay.text = "Turns: " + turns;
     }
 
 
@@ -143,4 +149,16 @@ public class PlayerTurnState : MovementBase
         }
     }
 
+
+    public override GameObject otherCheck()
+    {
+        Ray ray = new Ray(transform.position + transform.forward + transform.up * 100, -transform.up);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            if (hit.transform.gameObject.CompareTag("Enemy")) return hit.transform.gameObject;
+        }
+        return null;
+    }
 }

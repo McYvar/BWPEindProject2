@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class MovementBase : BaseState
 {
-    public bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
+    protected bool canMove, moving, canJump, directionChange, falling, dead, firstFloorTouch;
     protected Vector3 nextPos, destination;
     protected int turns;
     protected Vector3Int spawn;
@@ -42,6 +42,14 @@ public abstract class MovementBase : BaseState
         {
             transform.localEulerAngles = currentDirection;
             nextPos = transform.forward;
+
+            GameObject enemy = otherCheck();
+            if (enemy != null)
+            {
+                enemy.GetComponent<IDamagable>().takeDamage(1);
+                moving = true;
+                return;
+            }
 
             if (!directionChange)
             {
@@ -280,6 +288,12 @@ public abstract class MovementBase : BaseState
         {
             return hit.transform.gameObject;
         }
+        return null;
+    }
+
+
+    public virtual GameObject otherCheck()
+    {
         return null;
     }
     #endregion

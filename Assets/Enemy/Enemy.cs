@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour, IDamagable
     public bool isJumperEnemy;
     public float attackRange;
     public float detectRange;
+    public int dealsDamage;
 
     public int healt { get; set; }
 
@@ -26,6 +27,7 @@ public class Enemy : MonoBehaviour, IDamagable
         attackRange = info.attackRange;
         isJumperEnemy = info.doesEnemyJump;
         detectRange = info.detectRange;
+        dealsDamage = info.dealsDamage;
     }
 
 
@@ -49,5 +51,6 @@ public class Enemy : MonoBehaviour, IDamagable
     public void takeDamage(int amount)
     {
         healt -= amount;
+        Debug.Log("enemy took: " + amount + " damage!");
     }
 }

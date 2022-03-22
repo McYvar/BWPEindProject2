@@ -102,7 +102,7 @@ namespace TileBasedDungeonGeneration {
             int amount = Random.Range(0, maxEnemiesPerRoom + 1);
             for (int i = 0; i < amount; i++)
             {
-                GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5f, Quaternion.identity);
+                GameObject enemy = Instantiate(enemies[Random.Range(1, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5f, Quaternion.identity);
                 enemy.name = "Enemy" + enemyQueue.Count;
                 enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
             }

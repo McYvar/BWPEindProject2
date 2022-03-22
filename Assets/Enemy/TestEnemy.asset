@@ -18,3 +18,4 @@ MonoBehaviour:
   doesEnemyJump: 0
   attackRange: 3
   detectRange: 10
+  dealsDamage: 10
