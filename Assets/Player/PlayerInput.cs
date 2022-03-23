@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -76,24 +74,28 @@ public class PlayerInput : MonoBehaviour
     public void StartButton(InputAction.CallbackContext c)
     {
         if (c.performed) startButtonPressed = true;
+        if (c.canceled) startButtonPressed = false;
     }
 
     public static bool selectPressed;
     public void Select(InputAction.CallbackContext c)
     {
         if (c.performed) selectPressed = true;
+        if (c.canceled) selectPressed = false;
     }
 
     public static bool leftJoyPressed;
     public void LeftJoyPress(InputAction.CallbackContext c)
     {
         if (c.performed) leftJoyPressed = true;
+        if (c.canceled) leftJoyPressed = false;
     }
 
     public static bool rightJoyPressed;
     public void RightJoyPress(InputAction.CallbackContext c)
     {
         if (c.performed) rightJoyPressed = true;
+        if (c.canceled) rightJoyPressed = false;
     }
 
 }
