@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EventType
+{
+    ON_ENEMY_KILLED = 0,
+}
+
 public class Enemy : MonoBehaviour, IDamagable
 {
     [SerializeField] EnemyInfo info;
@@ -17,6 +22,16 @@ public class Enemy : MonoBehaviour, IDamagable
     public int healt { get; set; }
 
     public FiniteStateMachine fsm;
+
+    private void OnEnable()
+    {
+        EventManager.AddListener(EventType.ON_ENEMY_KILLED, OnEnemyDeath);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.RemoveListener(EventType.ON_ENEMY_KILLED, OnEnemyDeath);
+    }
 
     private void Start()
     {
@@ -52,5 +67,11 @@ public class Enemy : MonoBehaviour, IDamagable
     {
         healt -= amount;
         Debug.Log("enemy took: " + amount + " damage!");
+    }
+
+
+    public static void OnEnemyDeath()
+    {
+        Debug.Log("enemy died");
     }
 }
