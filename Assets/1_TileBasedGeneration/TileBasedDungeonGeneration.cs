@@ -37,6 +37,9 @@ namespace TileBasedDungeonGeneration {
         [SerializeField] int maxEnemiesPerRoom;
         public static Queue<Enemy> enemyQueue = new Queue<Enemy>();
 
+        [SerializeField] GameObject[] itemsPrefabs;
+        [Range(0, 100)] [SerializeField] float itemSpawnChance;
+
         MenuSystem menuSystem;
 
         int preventInfiniteLoop = 5000;
@@ -92,13 +95,25 @@ namespace TileBasedDungeonGeneration {
 
         void SpawnObjects()
         {
-            for (int j = 0; j < roomsList.Count; j++)
+            for (int i = 0; i < roomsList.Count; i++)
             {
-                Room room = roomsList[j];
+                Room room = roomsList[i];
                 SpawnEnemies(room);
 
                 SpawnLights(room);
+
+                SpawnItems(room);
             }
+        }
+
+
+        void SpawnItems(Room room)
+        {
+            float r = Random.value;
+            if (r > itemSpawnChance / 100) return;
+
+            int s = Random.Range(0, itemsPrefabs.Length);
+            Instantiate(itemsPrefabs[s], room.GetRandomLocation() + Vector3.up * 0.51f, itemsPrefabs[s].transform.rotation, transform);
         }
 
 
@@ -113,7 +128,7 @@ namespace TileBasedDungeonGeneration {
             int amount = Random.Range(0, maxEnemiesPerRoom + 1);
             for (int i = 0; i < amount; i++)
             {
-                GameObject enemy = Instantiate(enemies[Random.Range(1, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5f, Quaternion.identity);
+                GameObject enemy = Instantiate(enemies[Random.Range(1, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5f, Quaternion.identity, transform);
                 enemy.name = "Enemy" + enemyQueue.Count;
                 enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
             }

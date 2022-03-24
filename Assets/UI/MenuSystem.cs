@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuSystem : MonoBehaviour
 {
@@ -19,12 +17,16 @@ public class MenuSystem : MonoBehaviour
 
     [Header("Inventory menu")]
     [SerializeField] GameObject inventoryMenuObject;
-    [SerializeField] GameObject firstInventoryButton;
     [SerializeField] GameObject[] inventoryButtons;
+    public static ItemObject[] inventoryItems;
 
     GameObject activeMenu;
     bool firstButtonIsSet;
 
+    private void Start()
+    {
+        inventoryItems = new ItemObject[5];
+    }
 
     private void Update()
     {
@@ -39,9 +41,15 @@ public class MenuSystem : MonoBehaviour
     void PlayBehaviour()
     {
         Time.timeScale = 1;
-        if (PlayerInput.startButtonPressed) { SwitchMenu(optionsMenuObject, Menu.Options); firstButtonIsSet = false;
-    }
-        if (PlayerInput.northPressed && !GameStates.enemyRunning) { SwitchMenu(inventoryMenuObject, Menu.Inventory); firstButtonIsSet = false; }
+        if (PlayerInput.startButtonPressed)
+        {
+            SwitchMenu(optionsMenuObject, Menu.Options); firstButtonIsSet = false;
+        }
+        if (PlayerInput.northPressed && !GameStates.enemyRunning)
+        {
+            SwitchMenu(inventoryMenuObject, Menu.Inventory);
+            firstButtonIsSet = false;
+        }
     }
 
     void OptionsBehaviour()
@@ -76,28 +84,62 @@ public class MenuSystem : MonoBehaviour
 
     void InventoryBehaviour()
     {
-        SetFirstSelectedButton(firstInventoryButton);
         Time.timeScale = 0;
-        if (!PlayerInput.northPressed) { SwitchMenu(playMenuObject, Menu.Play); firstButtonIsSet = false; }
+        if (!PlayerInput.northPressed)
+        {
+            SwitchMenu(playMenuObject, Menu.Play);
+            firstButtonIsSet = false;
+            CloseAllSubMenu();
+        }
+
+        for (int i = 0; i < inventoryItems.Length; i++)
+        {
+            if (inventoryItems[i] == null)
+            {
+                inventoryButtons[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
+                inventoryButtons[i].SetActive(false);
+            }
+            else
+            {
+                inventoryButtons[i].transform.GetChild(0).GetComponent<Image>().sprite = inventoryItems[i].spriteImage;
+                SetFirstSelectedButton(inventoryButtons[i]);
+                inventoryButtons[i].SetActive(true);
+            }
+        }
     }
 
     public void UseItem(int itemIndex)
     {
-        if (Item.inventoryItems[itemIndex] == null) return;
+        if (inventoryItems[itemIndex] == null) return;
+        Debug.Log("Item slot " + itemIndex + " contains " + inventoryItems[itemIndex].itemName);
     }
 
-    public void AddItem(ItemObject item)
+
+    public void DropItem(int itemIndex)
     {
-        for (int i = 0; i < Item.inventoryItems.Length; i++)
+        if (inventoryItems[itemIndex] == null) return;
+        inventoryItems[itemIndex] = null;
+        firstButtonIsSet = false;
+    }
+
+
+    public void OpenItemSubMenu(int itemIndex)
+    {
+        if (inventoryItems[itemIndex] == null) return;
+        inventoryButtons[itemIndex].transform.GetChild(1).gameObject.SetActive(true);
+        inventoryButtons[itemIndex].transform.GetChild(2).gameObject.SetActive(true);
+    }
+
+
+    public void CloseAllSubMenu()
+    {
+        for (int i = 0; i < inventoryButtons.Length; i++)
         {
-            if (Item.inventoryItems[i] == null)
-            {
-                Item.inventoryItems[i] = item;
-                inventoryButtons[i].GetComponent<Image>().sprite = item.spriteImage;
-                return;
-            }
+            inventoryButtons[i].transform.GetChild(1).gameObject.SetActive(false);
+            inventoryButtons[i].transform.GetChild(2).gameObject.SetActive(false);
         }
     }
+
 
     public void QuitGame()
     {
@@ -109,4 +151,6 @@ public class MenuSystem : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
+
 }

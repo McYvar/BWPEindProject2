@@ -8,10 +8,6 @@ public class BasicSword : ItemObject
     public override void DoPassive()
     {
         base.DoPassive();
-    }
-
-    public override void DoActive()
-    {
-        base.DoActive();
+        Player.currentDamage += damage;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ItemObject : ScriptableObject
+public abstract class ItemObject : ScriptableObject
 {
     public string itemName;
     public Sprite spriteImage;
@@ -12,6 +12,7 @@ public class ItemObject : ScriptableObject
         if (!hasPassive) return;
         // do passive
     }
+
 
     public virtual void DoActive()
     {

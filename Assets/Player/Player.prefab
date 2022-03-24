@@ -616,7 +616,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ab39d88245f22b438b93e78351f5362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dealsDamage: 50
+  maxHealth: 10
+  normalShield: 0
+  currentShield: 0
+  normalDamage: 3
+  currentDamage: 0
 --- !u!114 &4589794345840256217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,7 +947,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7578467976778116087}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
