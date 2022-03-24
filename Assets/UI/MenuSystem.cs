@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class MenuSystem : MonoBehaviour
 {
@@ -19,15 +20,11 @@ public class MenuSystem : MonoBehaviour
     [Header("Inventory menu")]
     [SerializeField] GameObject inventoryMenuObject;
     [SerializeField] GameObject firstInventoryButton;
-    [SerializeField] GameObject[] inventoryItems;
+    [SerializeField] GameObject[] inventoryButtons;
 
     GameObject activeMenu;
     bool firstButtonIsSet;
 
-    private void Awake()
-    {
-        inventoryItems = new GameObject[5];
-    }
 
     private void Update()
     {
@@ -82,13 +79,34 @@ public class MenuSystem : MonoBehaviour
         SetFirstSelectedButton(firstInventoryButton);
         Time.timeScale = 0;
         if (!PlayerInput.northPressed) { SwitchMenu(playMenuObject, Menu.Play); firstButtonIsSet = false; }
-
-        // add items etc...
     }
 
     public void UseItem(int itemIndex)
     {
-        if (inventoryItems[itemIndex] == null) return;
+        if (Item.inventoryItems[itemIndex] == null) return;
     }
 
+    public void AddItem(ItemObject item)
+    {
+        for (int i = 0; i < Item.inventoryItems.Length; i++)
+        {
+            if (Item.inventoryItems[i] == null)
+            {
+                Item.inventoryItems[i] = item;
+                inventoryButtons[i].GetComponent<Image>().sprite = item.spriteImage;
+                return;
+            }
+        }
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
 }

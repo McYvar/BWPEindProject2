@@ -23,16 +23,6 @@ public class Enemy : MonoBehaviour, IDamagable
 
     public FiniteStateMachine fsm;
 
-    private void OnEnable()
-    {
-        EventManager.AddListener(EventType.ON_ENEMY_KILLED, OnEnemyDeath);
-    }
-
-    private void OnDisable()
-    {
-        EventManager.RemoveListener(EventType.ON_ENEMY_KILLED, OnEnemyDeath);
-    }
-
     private void Start()
     {
         fsm = new FiniteStateMachine(typeof(EnemyIdleState), GetComponents<BaseState>());
@@ -69,9 +59,4 @@ public class Enemy : MonoBehaviour, IDamagable
         Debug.Log("enemy took: " + amount + " damage!");
     }
 
-
-    public static void OnEnemyDeath()
-    {
-        Debug.Log("enemy died");
-    }
 }

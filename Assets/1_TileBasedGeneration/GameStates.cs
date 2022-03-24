@@ -132,5 +132,4 @@ public class GameStates : MonoBehaviour
         yield return new WaitForSeconds(1);
         TurnDisplay.enabled = false;
     }
-
 }
