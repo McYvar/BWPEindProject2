@@ -35,7 +35,7 @@ public class CameraBehaviour : MonoBehaviour
             }
         }
 
-        if (GameStates.allEnemiesMoveAtTheSameTimeStatic && GameStates.isRunning)
+        if (GameStates.allEnemiesMoveAtTheSameTimeStatic && GameStates.enemyRunning)
         {
             higherCamera.transform.position = new Vector3(objectToFollow.transform.position.x, higherCamera.transform.position.y, objectToFollow.transform.position.z);
             objectToFollow = higherCamera;

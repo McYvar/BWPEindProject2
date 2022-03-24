@@ -7,7 +7,7 @@ public class GameStates : MonoBehaviour
 {
     public static bool startEnemyTurn;
     bool startPlayerTurn;
-    public static bool isRunning;
+    public static bool enemyRunning;
     public static bool ableToDequeue;
     [SerializeField] bool allEnemiesMoveAtTheSameTime;
     public static bool allEnemiesMoveAtTheSameTimeStatic;
@@ -47,7 +47,7 @@ public class GameStates : MonoBehaviour
             StartCoroutine(EnemyTurnDisplay());
             anotherBool = true;
             timerIsRunning = false;
-            isRunning = true;
+            enemyRunning = true;
             ableToDequeue = true;
             startEnemyTurn = false;
             enemyQueue = TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue;
@@ -55,7 +55,7 @@ public class GameStates : MonoBehaviour
             timer = 0;
         }
 
-        if (!isRunning) return;
+        if (!enemyRunning) return;
 
         // If enemies move one by one, they have to wait for each other to finish their moves
         if (ableToDequeue && enemyCount > 0 && !allEnemiesMoveAtTheSameTime)
@@ -82,7 +82,7 @@ public class GameStates : MonoBehaviour
         if (enemyCount < 1 && !activeEnemy.isTurn)
         {
             TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue = enemyQueue;
-            isRunning = false;
+            enemyRunning = false;
             startPlayerTurn = true;
         }
         else if (timer < 0 && allEnemiesMoveAtTheSameTime) enemyCount = 0;

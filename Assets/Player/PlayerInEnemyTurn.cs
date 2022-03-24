@@ -22,6 +22,6 @@ public class PlayerInEnemyTurn : BaseState
 
     public override void OnUpdate()
     {
-        if (!GameStates.isRunning) stateManager.SwitchState(typeof(PlayerTurnState));
+        if (!GameStates.enemyRunning) stateManager.SwitchState(typeof(PlayerTurnState));
     }
 }

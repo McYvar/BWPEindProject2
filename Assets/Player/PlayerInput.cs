@@ -24,38 +24,42 @@ public class PlayerInput : MonoBehaviour
     public static bool northPressed;
     public void North(InputAction.CallbackContext c)
     {
-        if (c.performed) northPressed = true;
+        if (c.started) northPressed = !northPressed;
     }
 
     public static bool eastPressed;
     public void East(InputAction.CallbackContext c)
     {
-        if (c.performed) eastPressed = true;
+        if (c.started) eastPressed = true;
+        if (c.canceled) eastPressed = false;
     }
 
     public static bool southPressed;
     public void South(InputAction.CallbackContext c)
     {
-        if (c.performed) southPressed = true;
+        if (c.started) southPressed = true;
+        if (c.canceled) southPressed = false;
     }
 
     public static bool westPressed;
     public void West(InputAction.CallbackContext c)
     {
-        if (c.performed) westPressed = true;
+        if (c.started) westPressed = true;
         if (c.canceled) westPressed = false;
     }
 
     public static bool leftShoulderPressed;
     public void LeftShoulder(InputAction.CallbackContext c)
     {
-        if (c.performed) leftShoulderPressed = true;
+        if (c.started) leftShoulderPressed = true;
+        if (c.canceled) leftShoulderPressed= false;
     }
 
     public static bool rightShoulderPressed;
     public void RightShoulder(InputAction.CallbackContext c)
     {
-        if (c.performed) rightShoulderPressed = true;
+        if (c.started) rightShoulderPressed = true;
+        if (c.canceled) rightShoulderPressed = false;
     }
 
     public static float leftTrigger;
@@ -73,7 +77,7 @@ public class PlayerInput : MonoBehaviour
     public static bool startButtonPressed;
     public void StartButton(InputAction.CallbackContext c)
     {
-        if (c.performed) startButtonPressed = true;
+        if (c.started) startButtonPressed = true;
         if (c.canceled) startButtonPressed = false;
     }
 
@@ -87,14 +91,14 @@ public class PlayerInput : MonoBehaviour
     public static bool leftJoyPressed;
     public void LeftJoyPress(InputAction.CallbackContext c)
     {
-        if (c.performed) leftJoyPressed = true;
+        if (c.started) leftJoyPressed = true;
         if (c.canceled) leftJoyPressed = false;
     }
 
     public static bool rightJoyPressed;
     public void RightJoyPress(InputAction.CallbackContext c)
     {
-        if (c.performed) rightJoyPressed = true;
+        if (c.started) rightJoyPressed = true;
         if (c.canceled) rightJoyPressed = false;
     }
 
