@@ -37,6 +37,8 @@ namespace TileBasedDungeonGeneration {
         [SerializeField] int maxEnemiesPerRoom;
         public static Queue<Enemy> enemyQueue = new Queue<Enemy>();
 
+        MenuSystem menuSystem;
+
         int preventInfiniteLoop = 5000;
 
         private void Start()
@@ -48,6 +50,15 @@ namespace TileBasedDungeonGeneration {
             SpawnObjects();
 
             SpawnPlayer();
+
+            menuSystem = GetComponent<MenuSystem>();
+
+            Invoke("WaitForLoad", 1);
+        }
+
+        void WaitForLoad()
+        {
+            menuSystem.enabled = true;
         }
 
 
