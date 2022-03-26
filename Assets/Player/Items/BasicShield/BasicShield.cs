@@ -9,7 +9,6 @@ public class BasicShield : ItemObject
 
     public override void DoPassive()
     {
-        base.DoPassive();
         Player.currentShield += damageReduction;
     }
 }

@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EventType
+{
+    ON_ENEMY_DEATH_SPAWN_ITEM = 0,
+    ON_ENEMY_DEATH_SPAWN_SPELL = 1
+}
+
 public static class EventManager
 {
     private static Dictionary<EventType, System.Action> eventDictionary = new Dictionary<EventType, System.Action>();

@@ -1,15 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Item : MonoBehaviour
 {
     [SerializeField] ItemObject item;
+    [SerializeField] SpellsItemObject spell;
 
     private void Awake()
     {
         GetComponent<Rigidbody>().isKinematic = true;
+    }
+
+    public void AddSpell(SpellsItemObject item)
+    {
+        if (Spells.currentSpell != null)
+        {
+            if (item.itemLevel == Spells.currentSpell.itemLevel)
+            {
+                StartCoroutine(FindObjectOfType<MenuSystem>().DisplayThenRemoveChat("You already own this spell!"));
+                return;
+            }
+            if (item.itemLevel < Spells.currentSpell.itemLevel)
+            {
+                StartCoroutine(FindObjectOfType<MenuSystem>().DisplayThenRemoveChat("You already own a stronger spell!"));
+                return;
+            }
+        }
+        Spells.switchSpell(item);
+        Destroy(gameObject);
+        return;
     }
 
     public void AddItem(ItemObject item)
@@ -28,6 +47,14 @@ public class Item : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) AddItem(item);
+        if (other.CompareTag("Player"))
+        {
+            if (spell != null)
+            {
+                AddSpell(spell);
+                return;
+            }
+            AddItem(item);
+        }
     }
 }

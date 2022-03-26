@@ -7,7 +7,6 @@ public class BasicSword : ItemObject
 
     public override void DoPassive()
     {
-        base.DoPassive();
         Player.currentDamage += damage;
     }
 }

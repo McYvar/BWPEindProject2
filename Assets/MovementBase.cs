@@ -43,17 +43,19 @@ public abstract class MovementBase : BaseState
             transform.localEulerAngles = currentDirection;
             nextPos = transform.forward;
 
-            GameObject enemy = otherCheck();
-            if (enemy != null)
-            {
-                enemy.GetComponent<IDamagable>().takeDamage(1);
-                moving = true;
-                return;
-            }
-
             if (!directionChange)
-            {
+            {            
+                // Enemy has no override for other check so these lines only apply to player
+                GameObject enemy = otherCheck();
+                if (enemy != null)
+                {
+                    enemy.GetComponent<IDamagable>().takeDamage(Player.currentDamage);
+                    moving = true;
+                    return;
+                }
+
                 if (!checkForBorder(1f)) return;
+
                 if (canJump && !checkForBorder(2f)) return;
 
                 // Jump two spaces forward
@@ -115,17 +117,7 @@ public abstract class MovementBase : BaseState
         {
             if (floor != null)
             {
-                Vector3 temp;
-                if (floor.CompareTag("Floater"))
-                {
-                    temp = new Vector3(floor.transform.position.x, floor.transform.position.y + 1f, floor.transform.position.z);
-                    destination = temp;
-                }
-                else
-                {
-                    temp = new Vector3(transform.position.x, floor.transform.position.y + 1f, transform.position.z);
-                    destination = temp;
-                }
+                destination = new Vector3(transform.position.x, floor.transform.position.y + 1, transform.position.z);
                 fallDistance = 0;
                 speed = Mathf.Infinity;
                 falling = false;

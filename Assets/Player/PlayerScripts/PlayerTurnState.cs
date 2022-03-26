@@ -4,14 +4,13 @@ using TMPro;
 public class PlayerTurnState : MovementBase
 {
     [SerializeField] TMP_Text turnsDisplay;
-    Player player;
     CameraBehaviour cam;
     public int playerHasTurns;
     float deadZone = 0.7f;
+    bool givenInput;
 
     public override void OnAwake()
     {
-        player = GetComponent<Player>();
         currentDirection = up;
         nextPos = transform.forward;
         speed = normalSpeed;
@@ -27,6 +26,7 @@ public class PlayerTurnState : MovementBase
         turns = playerHasTurns;
         canMove = false;
         turnsDisplay.enabled = true;
+        Spells.castCooldown--;
     }
 
 
@@ -77,36 +77,39 @@ public class PlayerTurnState : MovementBase
             up = new Vector3Int(0, 270, 0);
         }
     }
-
-
-    public override void Move()
-    {
-        base.Move();
-    }
     
     public override void InputCheck()
     {
         if (!moving && !dead)
         {
-            if (PlayerInput.leftJoy.y > deadZone)
+            if (PlayerInput.leftJoy.y > deadZone && !givenInput)
             {
                 CameraCheck();
                 GoUp();
+                givenInput = true;
             }
-            if (PlayerInput.leftJoy.x > deadZone)
+            if (PlayerInput.leftJoy.x > deadZone && !givenInput)
             {
                 CameraCheck();
                 GoRight();
+                givenInput = true;
             }
-            if (PlayerInput.leftJoy.y < -deadZone)
+            if (PlayerInput.leftJoy.y < -deadZone && !givenInput)
             {
                 CameraCheck();
                 GoDown();
+                givenInput = true;
             }
-            if (PlayerInput.leftJoy.x < -deadZone)
+            if (PlayerInput.leftJoy.x < -deadZone && !givenInput)
             {
                 CameraCheck();
                 GoLeft();
+                givenInput = true;
+            }
+            if (PlayerInput.leftJoy.x > -deadZone && PlayerInput.leftJoy.x < deadZone && 
+                PlayerInput.leftJoy.y > -deadZone && PlayerInput.leftJoy.y < deadZone)
+            {
+                givenInput = false;
             }
             if (PlayerInput.southPressed)
             {

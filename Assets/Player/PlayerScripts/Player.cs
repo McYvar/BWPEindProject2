@@ -26,6 +26,15 @@ public class Player : MonoBehaviour, IDamagable
         currentDamage = normalDamage;
     }
 
+
+    private void Update()
+    {
+        InventoryBehaviour();
+
+        if (MenuSystem.invIsOpen || MenuSystem.gameIsPaused) return;
+        finiteStateMachine.OnUpdate();
+    }
+
     public void setHealth(int amount)
     {
         healt = amount;
@@ -35,14 +44,23 @@ public class Player : MonoBehaviour, IDamagable
     public void takeDamage(int amount)
     {
         healt -= amount;
-        Debug.Log("player took: " + amount + " damage!");
+        if (amount > 0)
+        {
+            StartCoroutine(FindObjectOfType<MenuSystem>().DisplayThenRemoveChat("You took: " + amount + " damage!"));
+        }
+        else if (amount == 0)
+        {
+            StartCoroutine(FindObjectOfType<MenuSystem>().DisplayThenRemoveChat("You took no damage!"));
+        }
+        else
+        {
+            StartCoroutine(FindObjectOfType<MenuSystem>().DisplayThenRemoveChat("You healed for: " + -amount + "!"));
+        }
     }
 
 
-    private void Update()
+    void InventoryBehaviour()
     {
-        finiteStateMachine.OnUpdate();
-
         currentDamage = normalDamage;
         currentShield = normalShield;
 
@@ -51,10 +69,7 @@ public class Player : MonoBehaviour, IDamagable
         foreach (ItemObject item in MenuSystem.inventoryItems)
         {
             if (item == null) continue;
-            item.DoActive();
             item.DoPassive();
         }
-        Debug.Log(currentDamage);
-        Debug.Log(currentShield);
     }
 }

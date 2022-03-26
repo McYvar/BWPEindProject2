@@ -25,6 +25,7 @@ public class CameraBehaviour : MonoBehaviour
     {
         if (camFollow)
         {
+            if (objectToFollow == null) return;
             camPosition = Vector3.SmoothDamp(cam.transform.position, objectToFollow.transform.position, ref camVelocity, camSmoothSpeed * Time.deltaTime);
             cam.transform.position = camPosition;
             cam.transform.Rotate(0, PlayerInput.rightJoy.x * camSpeed * Time.deltaTime, 0);

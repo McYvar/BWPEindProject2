@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe93e19acf09e67448a1de6efd4816d7, type: 3}
   m_Name: TestEnemy
   m_EditorClassIdentifier: 
-  enemyName: John
+  enemyName: John Jumper
   turns: 2
-  health: 100
-  doesEnemyJump: 0
+  health: 5
+  doesEnemyJump: 1
   attackRange: 3
   detectRange: 10
-  dealsDamage: 10
+  dealsDamage: 1

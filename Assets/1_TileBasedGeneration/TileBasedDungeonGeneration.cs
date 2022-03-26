@@ -12,8 +12,8 @@ namespace TileBasedDungeonGeneration {
         [SerializeField] Dictionary<Vector3Int, TileType> dungeon = new Dictionary<Vector3Int, TileType>();
         List<Room> roomsList = new List<Room>();
 
-        [SerializeField] int gridWidth = 100;
-        [SerializeField] int gridHeight = 100;
+        public int gridWidth = 100;
+        public int gridHeight = 100;
         public Vector2 GetGrid() { return new Vector2(gridWidth, gridHeight); }
 
         [SerializeField] int roomSizeMin = 3;
@@ -35,9 +35,10 @@ namespace TileBasedDungeonGeneration {
 
         [SerializeField] GameObject[] enemies;
         [SerializeField] int maxEnemiesPerRoom;
-        public static Queue<Enemy> enemyQueue = new Queue<Enemy>();
+        public static Queue<Enemy> enemyQueue;
 
         [SerializeField] GameObject[] itemsPrefabs;
+        [SerializeField] GameObject[] spellsPrefabs;
         [Range(0, 100)] [SerializeField] float itemSpawnChance;
 
         MenuSystem menuSystem;
@@ -46,6 +47,10 @@ namespace TileBasedDungeonGeneration {
 
         private void Start()
         {
+            Time.timeScale = 1;
+
+            enemyQueue = new Queue<Enemy>();
+
             Generate();
 
             foreach (GameObject obj in objectsToCombine) CombineMeshes(obj);
@@ -57,6 +62,18 @@ namespace TileBasedDungeonGeneration {
             menuSystem = GetComponent<MenuSystem>();
 
             Invoke("WaitForLoad", 1);
+        }
+
+        private void OnEnable()
+        {
+            EventManager<Vector3>.AddListener(EventType.ON_ENEMY_DEATH_SPAWN_ITEM, SpawnItems);
+            EventManager<Vector3>.AddListener(EventType.ON_ENEMY_DEATH_SPAWN_SPELL, SpawnSpells);
+        }
+
+        private void OnDisable()
+        {
+            EventManager<Vector3>.RemoveListener(EventType.ON_ENEMY_DEATH_SPAWN_ITEM, SpawnItems);
+            EventManager<Vector3>.RemoveListener(EventType.ON_ENEMY_DEATH_SPAWN_SPELL, SpawnSpells);
         }
 
         void WaitForLoad()
@@ -102,18 +119,22 @@ namespace TileBasedDungeonGeneration {
 
                 SpawnLights(room);
 
-                SpawnItems(room);
+                SpawnItems(room.GetRandomLocation());
             }
         }
 
 
-        void SpawnItems(Room room)
+        void SpawnItems(Vector3 location)
         {
-            float r = Random.value;
-            if (r > itemSpawnChance / 100) return;
+            int r = Random.Range(0, itemsPrefabs.Length);
+            Instantiate(itemsPrefabs[r], location + Vector3.up * 0.51f, itemsPrefabs[r].transform.rotation, transform);
+        }
 
-            int s = Random.Range(0, itemsPrefabs.Length);
-            Instantiate(itemsPrefabs[s], room.GetRandomLocation() + Vector3.up * 0.51f, itemsPrefabs[s].transform.rotation, transform);
+
+        void SpawnSpells(Vector3 location)
+        {
+            int r = Random.Range(0, spellsPrefabs.Length);
+            Instantiate(spellsPrefabs[r], location + Vector3.up * 0.51f, spellsPrefabs[r].transform.rotation, transform);
         }
 
 
@@ -128,7 +149,7 @@ namespace TileBasedDungeonGeneration {
             int amount = Random.Range(0, maxEnemiesPerRoom + 1);
             for (int i = 0; i < amount; i++)
             {
-                GameObject enemy = Instantiate(enemies[Random.Range(1, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5f, Quaternion.identity, transform);
+                GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5, Quaternion.identity, transform);
                 enemy.name = "Enemy" + enemyQueue.Count;
                 enemyQueue.Enqueue(enemy.GetComponent<Enemy>());
             }
@@ -139,7 +160,7 @@ namespace TileBasedDungeonGeneration {
         {
             GameObject playerHolder = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
             GameObject player = FindObjectOfType<Player>().gameObject;
-            player.transform.position = new Vector3Int(roomsList[0].GetCenter().x, 5, roomsList[0].GetCenter().z);
+            player.transform.position = roomsList[0].GetRandomLocation() + Vector3.up * 5;
         }
 
 
@@ -175,8 +196,10 @@ namespace TileBasedDungeonGeneration {
             {
                 switch (kv.Value)
                 {
-                    case TileType.Floor: Instantiate(floorPrefab, kv.Key, Quaternion.identity, floorMapout.transform); break;
-                    case TileType.Wall: Instantiate(borderPrefab, kv.Key, Quaternion.identity, borderMapout.transform); break;
+                    case TileType.Floor:
+                        Instantiate(floorPrefab, kv.Key, Quaternion.identity, floorMapout.transform);
+                        break;
+                    case TileType.Wall: Instantiate(borderPrefab, kv.Key + Vector3.up * 1.5f, Quaternion.identity, borderMapout.transform); break;
                 }
             }
         }

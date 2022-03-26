@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe93e19acf09e67448a1de6efd4816d7, type: 3}
   m_Name: TestEnemy2
   m_EditorClassIdentifier: 
-  enemyName: Richard
+  enemyName: Stephen Single
   turns: 3
-  health: 200
+  health: 7
   doesEnemyJump: 0
   attackRange: 1
   detectRange: 10
-  dealsDamage: 5
+  dealsDamage: 2

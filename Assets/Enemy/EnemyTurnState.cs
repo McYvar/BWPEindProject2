@@ -41,7 +41,6 @@ public class EnemyTurnState : MovementBase
         if (!GameStates.allEnemiesMoveAtTheSameTimeStatic) cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
 
         Move();
-
     }
 
 
@@ -49,11 +48,11 @@ public class EnemyTurnState : MovementBase
     {
         if (timer > GameStates.timeInBetweenMovesStatic)
         {
-            if (Vector3.Distance(transform.position, player.transform.position) <= enemy.attackRange && CanSeePlayer())
+            if (Vector3.Distance(transform.position, player.transform.position) <= enemy.attackRange && CanSeePlayer() && turns > 0)
             {
                 turns = 0;
                 doAttack = true;
-                player.GetComponent<IDamagable>().takeDamage(enemy.dealsDamage);
+                player.GetComponent<IDamagable>().takeDamage(enemy.dealsDamage - Player.currentShield > 0 ? enemy.dealsDamage - Player.currentShield : 0);
             }
             base.Move();
 
@@ -119,7 +118,7 @@ public class EnemyTurnState : MovementBase
     {
         RaycastHit hit;
         Ray ray = new Ray(transform.position, player.transform.position - transform.position);
-        Debug.DrawRay(ray.origin, ray.direction * enemy.detectRange, Color.yellow);
+        Debug.DrawRay(ray.origin + transform.up * 2, ray.direction * enemy.detectRange, Color.yellow);
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.CompareTag("Player")) return true;

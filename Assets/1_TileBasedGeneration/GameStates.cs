@@ -31,6 +31,8 @@ public class GameStates : MonoBehaviour
         timeInBetweenMovesStatic = timeInBetweenMoves;
         timerIsRunning = false;
         startPlayerTurn = true;
+        enemyRunning = false;
+        anotherBool = false;
     }
 
     private void Update()
@@ -94,8 +96,14 @@ public class GameStates : MonoBehaviour
     {
         ableToDequeue = false;
         Enemy enemy = enemyQueue.Dequeue();
+        if (enemy.healt < 0) return;
         enemy.isTurn = true;
-        activeEnemy = enemy;
+        if (enemy.GetTurns() > timer && allEnemiesMoveAtTheSameTimeStatic)
+        {
+            timer = enemy.GetTurns();
+            activeEnemy = enemy;
+        }
+        else if (!allEnemiesMoveAtTheSameTimeStatic) activeEnemy = enemy;
         enemyQueue.Enqueue(enemy);
     }
 
@@ -104,15 +112,12 @@ public class GameStates : MonoBehaviour
     {
         if (timerIsRunning) return;
         timerIsRunning = true;
-        foreach (Enemy enemy in enemyQueue)
+        int count = enemyQueue.Count;
+        for (int i = 0; i < count; i++)
         {
-            if (enemy.GetTurns() > timer)
-            {
-                timer = enemy.GetTurns();
-                activeEnemy = enemy;
-            }
+            DoEnemyTurn();
         }
-        timer = (timer * timeInBetweenMoves) + 3;
+        timer = (timer * timeInBetweenMoves) + 1;
     }
 
 
