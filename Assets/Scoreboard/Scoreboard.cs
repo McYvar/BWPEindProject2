@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class Scoreboard : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class Scoreboard : MonoBehaviour
         entryAmount = SaveSystem.CountFileLines();
         if (entryAmount <= 0) return;
         LoadScore();
+        SortScore();
     }
 
 
@@ -43,7 +45,7 @@ public class Scoreboard : MonoBehaviour
 
         for (int i = 0; i < entryName.Count; i++)
         {
-            board.text += entryName[i] + "............................................." + finalScore[i] + " points\n";
+            board.text += entryName[i] + ": " + finalScore[i] + " points\n";
         }
     }
 
@@ -66,6 +68,30 @@ public class Scoreboard : MonoBehaviour
             entryName.Add(data[i].entryName);
             finalScore.Add(data[i].finalScore);
         }
+    }
+
+
+    void SortScore()
+    {
+        int[] tempScoreArray = new int[finalScore.Count];
+        string[] tempNameArray = new string[entryName.Count];
+
+        for (int i = 0; i < tempScoreArray.Length; i++)
+        {
+            for (int j = 0; j < finalScore.Count; j++)
+            {
+                if (tempScoreArray[i] < finalScore[j])
+                {
+                    tempScoreArray[i] = finalScore[j];
+                    tempNameArray[i] = entryName[j];
+                }
+            }
+            finalScore.Remove(tempScoreArray[i]);
+            entryName.Remove(tempNameArray[i]);
+        }
+
+        finalScore = tempScoreArray.ToList();
+        entryName = tempNameArray.ToList();
     }
 }
 

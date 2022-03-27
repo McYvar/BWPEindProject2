@@ -160,7 +160,7 @@ namespace TileBasedDungeonGeneration {
         {
             GameObject playerHolder = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
             GameObject player = FindObjectOfType<Player>().gameObject;
-            player.transform.position = roomsList[0].GetRandomLocation() + Vector3.up * 5;
+            player.transform.position = roomsList[0].GetRandomLocation() + Vector3.up * 100;
         }
 
 

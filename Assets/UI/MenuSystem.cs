@@ -329,7 +329,7 @@ public class MenuSystem : MonoBehaviour
 
     public void SubmitName(string name)
     {
-        if (name != null)
+        if (name != "")
         {
             playerName = name;
         }

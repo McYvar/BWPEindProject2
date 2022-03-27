@@ -30,9 +30,11 @@ public class SaveSystem
                 string temp = reader.ReadLine();
                 string[] values = temp.Split('½');
 
-                string name = values[0];
+                string name =   !string.IsNullOrWhiteSpace(values[0]) && values[0].Length >= 5
+                                ? values[0].Substring(0, 6)
+                                : values[0];
                 int score = int.Parse(values[1]);
-                data[i] = new ScoreData(values[0], int.Parse(values[1]));
+                data[i] = new ScoreData(name, score);
             }
 
             reader.Close();
