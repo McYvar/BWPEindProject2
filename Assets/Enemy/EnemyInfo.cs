@@ -12,4 +12,5 @@ public class EnemyInfo : ScriptableObject
     public float attackRange;
     public float detectRange;
     public int dealsDamage;
+    public int pointsWorth;
 }

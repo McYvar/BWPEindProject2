@@ -30,7 +30,11 @@ public class MenuSystem : MonoBehaviour
 
     [Header("Death menu")]
     [SerializeField] GameObject deathMenuObject;
+    [SerializeField] GameObject scoreInputMenuObject;
     [SerializeField] GameObject mainMenuButton;
+    [SerializeField] GameObject inputField;
+    string playerName;
+    bool playerHasEnteredName;
     bool isDead;
 
     Player player;
@@ -50,11 +54,19 @@ public class MenuSystem : MonoBehaviour
     private void OnEnable()
     {
         player = FindObjectOfType<Player>();
+        EventManager.AddListener(EventType.ON_PLAYER_WIN, SwitchToLastMenu);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.RemoveListener(EventType.ON_PLAYER_WIN, SwitchToLastMenu);
     }
 
 
     private void Start()
     {
+        activeMenu = playMenuObject;
+        playerHasEnteredName = false;
         inventoryItems = new ItemObject[5];
         invIsOpen = false;
         gameIsPaused = false;
@@ -65,8 +77,7 @@ public class MenuSystem : MonoBehaviour
     {
         if (player.healt <= 0 && !isDead)
         {
-            isDead = true;
-            SwitchMenu(deathMenuObject, Menu.Death);
+            SwitchToLastMenu();
         }
 
         switch (menu)
@@ -259,6 +270,16 @@ public class MenuSystem : MonoBehaviour
     }
 
 
+    void SwitchToLastMenu()
+    {
+        isDead = true;
+        activeMenu.SetActive(false);
+        scoreInputMenuObject.SetActive(true);
+        menu = Menu.Death;
+        firstButtonIsSet = false;
+    }
+
+
     void ChatLog()
     {
         onScreenChat.text = "";
@@ -292,8 +313,35 @@ public class MenuSystem : MonoBehaviour
     void DeathBehaviour()
     {
         gameIsPaused = true;
+        Time.timeScale = 0;
+
+        if (!playerHasEnteredName)
+        {
+            SetFirstSelectedButton(inputField);
+            scoreInputMenuObject.SetActive(true);
+        }
+        else
+        {
+            SetFirstSelectedButton(mainMenuButton);
+        }
+    }
+
+
+    public void SubmitName(string name)
+    {
+        if (name != null)
+        {
+            playerName = name;
+        }
+        else
+        {
+            playerName = "Player";
+        }
+        playerHasEnteredName = true;
+        scoreInputMenuObject.SetActive(false);
         deathMenuObject.SetActive(true);
-        SetFirstSelectedButton(mainMenuButton);
+        firstButtonIsSet = false;
+        Scoreboard.SaveScore(playerName, Scoreboard.currentScore);
     }
     #endregion
 }

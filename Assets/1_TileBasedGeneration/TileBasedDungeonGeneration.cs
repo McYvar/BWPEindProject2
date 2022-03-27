@@ -146,7 +146,7 @@ namespace TileBasedDungeonGeneration {
 
         void SpawnEnemies(Room room)
         {
-            int amount = Random.Range(0, maxEnemiesPerRoom + 1);
+            int amount = Random.Range(1, maxEnemiesPerRoom + 1);
             for (int i = 0; i < amount; i++)
             {
                 GameObject enemy = Instantiate(enemies[Random.Range(0, enemies.Count())], room.GetRandomLocation() + Vector3.up * 5, Quaternion.identity, transform);
@@ -199,7 +199,7 @@ namespace TileBasedDungeonGeneration {
                     case TileType.Floor:
                         Instantiate(floorPrefab, kv.Key, Quaternion.identity, floorMapout.transform);
                         break;
-                    case TileType.Wall: Instantiate(borderPrefab, kv.Key + Vector3.up * 1.5f, Quaternion.identity, borderMapout.transform); break;
+                    case TileType.Wall: Instantiate(borderPrefab, kv.Key + Vector3.up, Quaternion.identity, borderMapout.transform); break;
                 }
             }
         }

@@ -18,6 +18,7 @@ public class GameStates : MonoBehaviour
     float timer;
     bool timerIsRunning;
     bool anotherBool;
+    bool playerHasWon;
 
     Enemy activeEnemy;
 
@@ -26,6 +27,7 @@ public class GameStates : MonoBehaviour
 
     private void Start()
     {
+        playerHasWon = false;
         enemyQueue = TileBasedDungeonGeneration.TileBasedDungeonGeneration.enemyQueue;
         allEnemiesMoveAtTheSameTimeStatic = allEnemiesMoveAtTheSameTime;
         timeInBetweenMovesStatic = timeInBetweenMoves;
@@ -37,6 +39,13 @@ public class GameStates : MonoBehaviour
 
     private void Update()
     {
+        if (enemyQueue.Count <= 0 && !playerHasWon)
+        {
+            playerHasWon = true;
+            EventManager.InvokeEvent(EventType.ON_PLAYER_WIN);
+            return;
+        }
+
         // Run once in the update function
         if (startPlayerTurn)
         {
@@ -96,7 +105,7 @@ public class GameStates : MonoBehaviour
     {
         ableToDequeue = false;
         Enemy enemy = enemyQueue.Dequeue();
-        if (enemy.healt < 0) return;
+        if (enemy.isDead) return;
         enemy.isTurn = true;
         if (enemy.GetTurns() > timer && allEnemiesMoveAtTheSameTimeStatic)
         {

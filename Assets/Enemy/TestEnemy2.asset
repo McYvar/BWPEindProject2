@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Stephen Single
   turns: 3
-  health: 7
+  health: 20
   doesEnemyJump: 0
   attackRange: 1
   detectRange: 10
-  dealsDamage: 2
+  dealsDamage: 9
+  pointsWorth: 50

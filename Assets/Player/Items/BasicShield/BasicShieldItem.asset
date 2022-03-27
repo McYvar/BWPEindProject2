@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BasicShieldItem
   m_EditorClassIdentifier: 
   itemName: Basic Shield
+  itemLevel: 1
   spriteImage: {fileID: 21300000, guid: cf368b4d717e68e4782567e2617f6a75, type: 3}
-  hasPassive: 1
   hasActive: 0
+  isSpell: 0
   damageReduction: 1

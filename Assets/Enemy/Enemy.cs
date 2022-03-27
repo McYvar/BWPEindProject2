@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour, IDamagable
     public float attackRange;
     public float detectRange;
     public int dealsDamage;
+    public bool isDead;
 
     public int healt { get; set; }
 
@@ -28,6 +29,7 @@ public class Enemy : MonoBehaviour, IDamagable
 
     private void Start()
     {
+        isDead = false;
         cam = FindObjectOfType<CameraBehaviour>();
         fsm = new FiniteStateMachine(typeof(EnemyIdleState), GetComponents<BaseState>());
         turns = info.turns;
@@ -59,6 +61,8 @@ public class Enemy : MonoBehaviour, IDamagable
             {
                 EventManager<Vector3>.InvokeEvent(EventType.ON_ENEMY_DEATH_SPAWN_ITEM, transform.position - transform.up);
             }
+            Scoreboard.currentScore += info.pointsWorth;
+            isDead = true;
             Destroy(gameObject);
         }
     }

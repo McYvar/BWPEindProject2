@@ -3,7 +3,7 @@ using UnityEngine;
 [SelectionBase]
 public class Player : MonoBehaviour, IDamagable
 {
-    public int maxHealth;
+    public int startingHealth;
 
     public int normalShield;
     public static int currentShield;
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour, IDamagable
 
     private void Start()
     {
-        healt = maxHealth;
+        healt = startingHealth;
         currentDamage = normalDamage;
     }
 

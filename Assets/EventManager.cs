@@ -5,7 +5,8 @@ using UnityEngine;
 public enum EventType
 {
     ON_ENEMY_DEATH_SPAWN_ITEM = 0,
-    ON_ENEMY_DEATH_SPAWN_SPELL = 1
+    ON_ENEMY_DEATH_SPAWN_SPELL = 1,
+    ON_PLAYER_WIN = 2
 }
 
 public static class EventManager

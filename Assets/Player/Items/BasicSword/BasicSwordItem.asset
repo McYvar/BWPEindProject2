@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BasicSwordItem
   m_EditorClassIdentifier: 
   itemName: Basic Sword
+  itemLevel: 1
   spriteImage: {fileID: 21300000, guid: 003e15c2612da6f42b59e838673a25f9, type: 3}
-  hasPassive: 1
   hasActive: 0
-  damage: 1
+  isSpell: 0
+  damage: 2

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: The big blue boss
   m_EditorClassIdentifier: 
   enemyName: Big blue boss
-  turns: 3
-  health: 1
+  turns: 5
+  health: 50
   doesEnemyJump: 0
-  attackRange: 3
-  detectRange: 10
-  dealsDamage: 4
+  attackRange: 4
+  detectRange: 20
+  dealsDamage: 8
+  pointsWorth: 100
