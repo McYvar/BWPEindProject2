@@ -17,6 +17,7 @@ public class Scoreboard : MonoBehaviour
 
     private void Start()
     {
+        currentScore = 0;
         entryName = new List<string>();
         finalScore = new List<int>();
 
