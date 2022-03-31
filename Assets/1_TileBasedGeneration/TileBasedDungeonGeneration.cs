@@ -117,7 +117,7 @@ namespace TileBasedDungeonGeneration {
                 Room room = roomsList[i];
                 SpawnEnemies(room);
 
-                SpawnLights(room);
+                //SpawnLights(room);
 
                 SpawnItems(room.GetRandomLocation());
             }

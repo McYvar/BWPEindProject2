@@ -7,4 +7,5 @@ public class SpellsItemObject : ItemObject
 {
     public int spellRange;
     public int spellCooldown;
+    public Color spellColor;
 }

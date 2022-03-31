@@ -10,6 +10,13 @@ public class Spells : MonoBehaviour
     [SerializeField] SpellsItemObject firstSpell;
     [SerializeField] TMP_Text spellInformation;
 
+    LineRenderer lineRenderer;
+
+    private void Awake()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+    }
+
     private void Start()
     {
         currentSpell = firstSpell;
@@ -30,7 +37,6 @@ public class Spells : MonoBehaviour
             castCooldown = currentSpell.spellCooldown;
             FireSpell();
         }
-
     }
 
     void FireSpell()
@@ -38,16 +44,19 @@ public class Spells : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(transform.position, transform.forward, out hit, currentSpell.spellRange);
         if (hit.collider == null) return;
-        hit.collider.GetComponent<IDamagable>()?.takeDamage(Player.currentDamage / 2);
+        hit.collider.GetComponent<IDamagable>()?.takeDamage(Player.currentDamage / 2 * currentSpell.itemLevel);
     }
 
 
     void SpellInformation()
     {
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, transform.position);
         spellInformation.text = "Current Spell: ";
         if (currentSpell == null)
         {
             spellInformation.text += "None\nRange: 0\nNot available!";
+            lineRenderer.SetPosition(1, transform.position);
             return;
         }
         else 
@@ -57,6 +66,8 @@ public class Spells : MonoBehaviour
         if (castCooldown <= 0)
         {
             spellInformation.text += "Available!";
+            lineRenderer.SetPosition(1, transform.position + transform.forward * currentSpell.spellRange);
+            lineRenderer.material.color = currentSpell.spellColor;
         }
         else
         {

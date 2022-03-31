@@ -42,7 +42,7 @@ public class PlayerTurnState : MovementBase
         if (turns <= 0 && !moving) stateManager.SwitchState(typeof(PlayerInEnemyTurn));
 
         cam.GetComponent<CameraBehaviour>().objectToFollow = gameObject;
-        turnsDisplay.text = "Turns: " + turns;
+        turnsDisplay.text = "Moves: " + turns;
     }
 
 

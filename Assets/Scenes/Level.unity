@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7479,7 +7479,11 @@ MonoBehaviour:
   - {fileID: 1166035540942394008, guid: b7e66b1701b5a004eae5d22d572cbf6a, type: 3}
   spellsPrefabs:
   - {fileID: 1166035540942394008, guid: 3a0e809d0de272a4083e700a4d8c17ea, type: 3}
+  - {fileID: 1166035540942394008, guid: 3a0e809d0de272a4083e700a4d8c17ea, type: 3}
+  - {fileID: 1166035540942394008, guid: 3a0e809d0de272a4083e700a4d8c17ea, type: 3}
   - {fileID: 1166035540942394008, guid: 85081d7384e35294f93349302840137e, type: 3}
+  - {fileID: 1166035540942394008, guid: 85081d7384e35294f93349302840137e, type: 3}
+  - {fileID: 1166035540942394008, guid: b82b01c768b3ccf478060088cc958e82, type: 3}
   itemSpawnChance: 100
 --- !u!4 &1976803750
 Transform:
